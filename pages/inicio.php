@@ -50,6 +50,8 @@ include_once("../components/header.php");
     <div class="row row-cols-1 row-cols-md-3 g-4">
 
 <?php
+include_once("../conf/conf.php");
+
 $productos_destacados = ['Mesa de luz Amelia', 'Biblioteca', 'Escritorio Olivia'];
 $lista_nombres = "'" . implode("','", $productos_destacados) . "'";
 
@@ -58,28 +60,35 @@ $resultado = $conf->query($sql);
 
 if ($resultado && $resultado->num_rows > 0) {
   while ($producto = $resultado->fetch_assoc()) {
-    $fotoHover = !empty($producto['foto_alternativa']) ? $producto['foto_alternativa'] : 'fondo.jpg';
+    $nombre = $producto['nombre_prod'];
+    $descripcion = $producto['descripcion'];
+    $foto = $producto['foto'];
+    $id = $producto['id_producto'];
+    $foto_alt = $producto['foto_alt'];
+    $fotoHover = $foto_alt != "" ? $foto_alt : "fondo.jpg";
     ?>
+
     <div class="col">
       <div class="card h-100">
         <div class="img-hover-wrap">
-          <img src="../img/<?php echo htmlspecialchars($producto['foto']); ?>" class="img-front" alt="<?php echo htmlspecialchars($producto['nombre_prod']); ?>" width="355" height="200">
-          <img src="../img/<?php echo htmlspecialchars($fotoHover); ?>" class="img-hover" alt="Imagen alternativa" width="355" height="200">
+          <img src="../img/<?php print $foto; ?>" class="img-front" alt="<?php print $nombre; ?>" width="355" height="200">
+          <img src="../img/<?php print $fotoHover; ?>" class="img-hover" alt="Imagen alternativa" width="355" height="200">
         </div>
         <div class="card-body">
-          <h5 class="card-title"><?php echo htmlspecialchars($producto['nombre_prod']); ?></h5>
-          <p class="card-text"><?php echo htmlspecialchars($producto['descripcion']); ?></p>
-          <a class="btn btn-outline-success" id="prod" href="detalle.php?id=<?php echo $producto['id_producto']; ?>">Comprar</a>
+          <h5 class="card-title"><?php print $nombre; ?></h5>
+          <p class="card-text"><?php print $descripcion; ?></p>
+          <a class="btn btn-outline-success" id="prod" href="detalle.php?id=<?php print $id; ?>">Comprar</a>
         </div>
         <div class="card-footer">
           <small class="text-body-secondary">Producto destacado del mes</small>
         </div>
       </div>
     </div>
+
     <?php
   }
 } else {
-  echo "<p>No hay productos destacados disponibles.</p>";
+  print "<p>No hay productos destacados disponibles.</p>";
 }
 ?>
 
