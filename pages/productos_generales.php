@@ -18,10 +18,14 @@ if ($resultado->num_rows > 0) {
         $descripcion = $producto['descripcion'];
         $precio = $producto['precio'];
         $foto = $producto['foto'];
+        $foto_alt = $producto['foto_alt']; // Nueva variable para la imagen hover
 
         print '<div class="col">
                 <div class="card h-100">
-                    <img src="../img/' . $foto . '" class="card-img-top" alt="' . $nombre . '" width="355" height="300">
+                    <div class="img-hover-wrap">
+                        <img src="../img/' . $foto . '" class="img-front" alt="' . $nombre . '">
+                        <img src="../img/' . $foto_alt . '" class="img-hover" alt="' . $nombre . ' - Vista alternativa">
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title">' . $nombre . '</h5>
                         <p class="card-text">' . $descripcion . '</p>
@@ -38,7 +42,8 @@ if ($resultado->num_rows > 0) {
 }
 ?>
 
+<div class = "mg"></div>
+
 <?php
 include_once("../components/footer.php");
 ?>
-

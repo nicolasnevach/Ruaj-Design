@@ -3,14 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-06-2025 a las 22:20:21
+-- Tiempo de generación: 25-06-2025 a las 23:48:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -23,18 +22,11 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `categorias`
---
-
+-- Tabla: categorias
 CREATE TABLE `categorias` (
   `id_categoria` int(11) NOT NULL,
   `nombre_cat` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `categorias`
---
 
 INSERT INTO `categorias` (`id_categoria`, `nombre_cat`) VALUES
 (1, 'Bancos'),
@@ -50,10 +42,23 @@ INSERT INTO `categorias` (`id_categoria`, `nombre_cat`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `producto`
---
+-- Tabla: pedidos
+CREATE TABLE `pedidos` (
+  `id_pedido` int(11) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `producto` varchar(100) NOT NULL,
+  `altura` varchar(50) DEFAULT NULL,
+  `ancho` varchar(50) DEFAULT NULL,
+  `profundidad` varchar(50) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `pintado` tinyint(1) DEFAULT 0,
+  `comentarios` text DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+-- --------------------------------------------------------
+
+-- Tabla: producto
 CREATE TABLE `producto` (
   `id_producto` int(11) NOT NULL,
   `nombre_prod` varchar(45) NOT NULL,
@@ -63,10 +68,6 @@ CREATE TABLE `producto` (
   `foto_alt` varchar(255) DEFAULT NULL,
   `id_categoria` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `producto`
---
 
 INSERT INTO `producto` (`id_producto`, `nombre_prod`, `precio`, `descripcion`, `foto`, `foto_alt`, `id_categoria`) VALUES
 (1, 'Banco Veronica', 150000, 'Banco', '../img/mueble.jpg', '../img/fondo.jpg', 1),
@@ -97,48 +98,42 @@ INSERT INTO `producto` (`id_producto`, `nombre_prod`, `precio`, `descripcion`, `
 (26, 'Ropero Atenas', 0, 'Atenas', '../img/mueble.jpg', '../img/fondo.jpg', 10),
 (27, 'Ropero Varillado', 0, 'Varillado', '../img/mueble.jpg', '../img/fondo.jpg', 10);
 
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `categorias`
---
+-- Índices
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id_categoria`);
 
---
--- Indices de la tabla `producto`
---
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id_pedido`);
+
 ALTER TABLE `producto`
   ADD PRIMARY KEY (`id_producto`),
   ADD KEY `fk_categoria` (`id_categoria`);
 
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `categorias`
---
+-- AUTO_INCREMENT
 ALTER TABLE `categorias`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
---
--- AUTO_INCREMENT de la tabla `producto`
---
+ALTER TABLE `pedidos`
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
 ALTER TABLE `producto`
   MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `producto`
---
+-- Relaciones
 ALTER TABLE `producto`
   ADD CONSTRAINT `fk_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`);
+
+-- NUEVA TABLA: usuarios
+CREATE TABLE `usuarios` (
+  `id_usuario` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre_usuario` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `es_admin` TINYINT(1) DEFAULT 0,
+  `baneado` TINYINT(1) DEFAULT 0,
+  PRIMARY KEY (`id_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

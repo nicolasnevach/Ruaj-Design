@@ -1,4 +1,4 @@
-<br><br><br><br>
+
   <footer>
     <p>Sheva © <?php echo date("Y"); ?> - Todos los derechos reservados</p>
   </footer>

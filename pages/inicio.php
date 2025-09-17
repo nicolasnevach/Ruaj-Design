@@ -99,27 +99,23 @@ if ($resultado && $resultado->num_rows > 0) {
 
 <section class="doble-columna">
   <div class="columna texto">
-    <h2><strong>PODEMOSASESORARTE</strong></h2>
+    <h2><strong>PODEMOS ASESORARTE</strong></h2>
     <p>Queremos ayudarte a hacer realidad el mueble que soñás!</p>
     <a href="https://wa.me/541138131307" class="boton"><strong>Manos a la obra! Diseñemos tu mueble!</strong></a>
   </div>
   <div class="columna imagenes">
-    <img src="https://placehold.co/250x100/" alt="Diseño 1" />
-    <img src="https://placehold.co/250x100/" alt="Diseño 2" />
-    <img src="https://placehold.co/250x100/" alt="Diseño 3" />
+    <img src="../img/planos.jpg" alt="planos" />
   </div>
 </section>
 
 <section id="contacto" class="doble-columna">
   <div class="columna section-fondo">
-    <img src="../img/mapa.jpg" alt="Diseño 1" />
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" width="875" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
   <div class="columna texto section-fondo">
-    <h2><strong>CONTACTO FÁBRICA
-      E-mail: ruajdesign@gmail.com
-      Whatsapp: 11-3813-1307
-      Dirección: Av. Elcano 4012 CHACARITA - CABA
-    </strong></h2>
+    <h2><strong>CONTACTO FÁBRICA</strong></h2>
+    <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 <strong>Dirección:</strong> Av. Elcano 4012 CHACARITA - CABA.</p>
+    <a href="https://wa.me/541138131307" class="boton"><strong>Ir a Whatsapp</strong></a>
   </div>
 </section>
 
