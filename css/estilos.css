@@ -508,6 +508,8 @@ body .columna.texto.section-fondo strong,
   font-size: 1.4rem !important;
 }
 
+
+
 /* Alternativa: si nada funciona, usar esta regla nuclear */
 .columna.texto * {
   font-size: 1.4rem !important;
@@ -515,7 +517,7 @@ body .columna.texto.section-fondo strong,
 
 /* Fondo gris oscuro a la derecha */
 .imagenes {
-  background-color: #3b3b3b;
+  background-color: var(--color-accent);
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;

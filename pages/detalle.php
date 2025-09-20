@@ -83,13 +83,14 @@ $id_categoria = $producto['id_categoria'];
           </div>
         </div>
 
-        <form action="agregar_carrito.php" method="POST">
+        <!-- Formulario de compra directa -->
+        <form id="formComprar" action="pagar_producto.php" method="POST">
           <input type="hidden" name="id" value="<?php print $id_producto; ?>">
 
           <div class="stock mb-4">
             <div class="d-flex align-items-center">
               <label for="quantity" class="me-2">Cantidad:</label>
-              <select class="form-select w-25" id="quantity" name="cantidad">
+              <select class="form-select w-25 mb-3" id="quantity" name="cantidad">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -101,10 +102,13 @@ $id_categoria = $producto['id_categoria'];
 
           <div class="row mb-4">
             <div class="col-md-6 mb-2 mb-md-0">
-              <button class="btn w-100" type="button" id="env">Comprar ahora</button>
+              <!-- Botón que envía el formulario directo a pagar_producto.php -->
+              <button class="btn w-100 btn-success" type="submit">Comprar ahora</button>
             </div>
             <div class="col-md-6">
-              <button type="submit" class="btn btn-outline-success w-100">Agregar al carrito</button>
+              <button type="button" class="btn btn-outline-success w-100" onclick="window.location.href='agregar_carrito.php?id=<?php echo $id_producto; ?>'">
+                Agregar al carrito
+              </button>
             </div>
           </div>
         </form>
@@ -147,7 +151,7 @@ $id_categoria = $producto['id_categoria'];
             <div class="card-body">
               <h5 class="card-title"><?php print $rel_nombre; ?></h5>
               <p class="card-text">$<?php print $rel_precio; ?></p>
-              <a class="btn" id="prod" href="detalle.php?id=<?php print $rel_id; ?>">Comprar</a>
+              <a class="btn btn-primary" href="detalle.php?id=<?php print $rel_id; ?>">Comprar</a>
             </div>
           </div>
         </div>

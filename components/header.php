@@ -41,8 +41,6 @@
   opacity: 1;
 }
 </style>
-    
-
 
 
 </head>
@@ -95,9 +93,7 @@
               <a class="nav-link" href="contacto.php" id="naveg">Armá tu mueble</a>
             </li>
           </ul>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-          </form>
+          
         </div>
       </div>
     </div>

@@ -52,8 +52,9 @@ $total = 0;
     print '</div>';
 
     print '<div class="text-end">';
-    print '<a href="finalizar_compra.php" class="btn btn-success">Finalizar compra</a>';
+    print '<a href="pagar_carrito.php" class="btn btn-success">Finalizar compra</a>';
     print '</div>';
+
   }
   ?>
 </div>
