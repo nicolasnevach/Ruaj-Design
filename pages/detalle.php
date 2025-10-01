@@ -2,9 +2,7 @@
 session_start();
 include_once("../components/header.php");
 include_once("../conf/conf.php");
-?>
 
-<?php
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
   print "<p class='text-center mt-5'>Producto no especificado.</p>";
   include_once("../components/footer.php");
@@ -33,7 +31,7 @@ $id_categoria = $producto['id_categoria'];
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="inicio.php" class="text-decoration-none" style="color: var(--color-text);">Inicio</a></li>
-      <li class="breadcrumb-item"><a href="productos.php" class="text-decoration-none" style="color: var(--color-text);">Productos</a></li>
+      <li class="breadcrumb-item"><a href="productos_generales.php" class="text-decoration-none" style="color: var(--color-text);">Productos</a></li>
       <li class="breadcrumb-item active" aria-current="page"><?php print $nombre; ?></li>
     </ol>
   </nav>
@@ -83,37 +81,39 @@ $id_categoria = $producto['id_categoria'];
           </div>
         </div>
 
-        <!-- Formulario de compra directa -->
-        <form id="formComprar" action="pagar_producto.php" method="POST">
-          <input type="hidden" name="id" value="<?php print $id_producto; ?>">
-
-          <div class="stock mb-4">
-            <div class="d-flex align-items-center">
-              <label for="quantity" class="me-2">Cantidad:</label>
-              <select class="form-select w-25 mb-3" id="quantity" name="cantidad">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
+        <!-- Botones alineados -->
+        <div class="row mb-4 align-items-end">
+          <div class="col-md-6">
+            <!-- Formulario de compra directa -->
+            <form id="formComprar" action="pagar_producto.php" method="POST">
+              <input type="hidden" name="id" value="<?php print $id_producto; ?>">
+              <div class="d-flex align-items-center mb-2">
+                <label for="quantity" class="me-2">Cantidad:</label>
+                <select class="form-select w-25" id="quantity" name="cantidad">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <button class="btn w-100 btn-success" type="submit">Comprar ahora</button>
+            </form>
           </div>
 
-          <div class="row mb-4">
-            <div class="col-md-6 mb-2 mb-md-0">
-              <!-- Botón que envía el formulario directo a pagar_producto.php -->
-              <button class="btn w-100 btn-success" type="submit">Comprar ahora</button>
-            </div>
-            <div class="col-md-6">
-              <button type="button" class="btn btn-outline-success w-100" onclick="window.location.href='agregar_carrito.php?id=<?php echo $id_producto; ?>'">
+          <div class="col-md-6">
+            <!-- Formulario independiente para agregar al carrito -->
+            <form id="formCarrito" method="POST" action="agregar_carrito.php" class="h-100 d-flex flex-column justify-content-end">
+              <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
+              <input type="hidden" name="cantidad" value="1">
+              <button type="submit" class="btn btn-outline-success w-100">
                 Agregar al carrito
               </button>
-            </div>
+            </form>
           </div>
-        </form>
+        </div>
 
-        <div class="card">
+        <div class="card mt-4">
           <div class="card-header">
             <h3>Lo que necesitas saber de este producto</h3>
           </div>
@@ -151,7 +151,7 @@ $id_categoria = $producto['id_categoria'];
             <div class="card-body">
               <h5 class="card-title"><?php print $rel_nombre; ?></h5>
               <p class="card-text">$<?php print $rel_precio; ?></p>
-              <a class="btn btn-primary" href="detalle.php?id=<?php print $rel_id; ?>">Comprar</a>
+              <a class="btn btn-success" href="detalle.php?id=<?php print $rel_id; ?>">Comprar</a>
             </div>
           </div>
         </div>

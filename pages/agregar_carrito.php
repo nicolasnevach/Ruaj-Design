@@ -29,7 +29,8 @@ if (isset($_POST['id']) && isset($_POST['cantidad'])) {
       );
     }
 
-    header("Location: carrito.php");
+    // 🔄 Volvemos al detalle del producto en lugar de ir al carrito
+    header("Location: detalle.php?id=$id&ok=1");
     exit;
   } else {
     header("Location: detalle.php?id=$id&error=producto");
