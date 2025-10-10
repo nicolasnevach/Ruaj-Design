@@ -24,7 +24,7 @@ if (isset($_POST['id']) && isset($_POST['cantidad'])) {
       $_SESSION['carrito'][$id] = array(
         'nombre' => $producto['nombre_prod'],
         'precio' => $producto['precio'],
-        'foto' => $producto['foto'],
+        'foto' => $producto['foto_zoom'],
         'cantidad' => $cantidad
       );
     }

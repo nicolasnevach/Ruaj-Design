@@ -13,8 +13,8 @@ use MercadoPago\SDK;
 use MercadoPago\Item;
 use MercadoPago\Preference;
 
-// Token de prueba (sandbox)
-SDK::setAccessToken("APP_USR-5066491151862490-091918-e2f93d2552e63ebdf6c50734ae895f53-2703255358");
+// ✅ TOKEN DE PRODUCCIÓN (no de prueba)
+MercadoPago\SDK::setAccessToken("APP_USR-5066491151862490-091918-e2f93d2552e63ebdf6c50734ae895f53-2703255358");
 
 // Validar que se haya enviado id de producto y cantidad
 if (!isset($_POST['id']) || !isset($_POST['cantidad'])) {
@@ -46,15 +46,13 @@ $item->currency_id = "ARS";
 $preference = new Preference();
 $preference->items = [$item];
 
-// URLs de retorno (localhost)
+// URLs de retorno
 $preference->back_urls = [
-    "success" => "http://localhost/ruaj/pages/pago_exitoso.php",
-    "failure" => "http://localhost/ruaj/pages/pago_fallido.php",
-    "pending" => "http://localhost/ruaj/pages/pago_pendiente.php"
+    "success" => "https://localhost/ruaj/pages/pago_exitoso.php",
+    "failure" => "https://localhost/ruaj/pages/pago_fallido.php",
+    "pending" => "https://localhost/ruaj/pages/pago_pendiente.php"
 ];
-
-// COMENTADO: auto_return genera error en localhost
-// $preference->auto_return = "approved";
+$preference->auto_return = "approved";
 
 try {
     $preference->save();
@@ -62,9 +60,9 @@ try {
     die("Error al crear la preferencia: " . $e->getMessage());
 }
 
-// REDIRECCIÓN AUTOMÁTICA al checkout sandbox
-if (!empty($preference->sandbox_init_point)) {
-    header("Location: " . $preference->sandbox_init_point);
+// ✅ Redirigir al checkout real (no sandbox)
+if (!empty($preference->init_point)) {
+    header("Location: " . $preference->init_point);
     exit;
 } else {
     die("No se pudo generar el link de pago.");

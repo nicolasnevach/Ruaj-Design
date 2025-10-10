@@ -6,7 +6,7 @@ include_once("../components/header.php");
 if (isset($_GET['categoria'])) {
   $categoria_id = (int)$_GET['categoria'];
 
-  $sql = "SELECT * FROM Producto WHERE id_categoria = $categoria_id";
+$sql = "SELECT * FROM Producto WHERE id_categoria = $categoria_id AND activo = 1";
   $resultado = $conf->query($sql);
 
   if ($resultado && $resultado->num_rows > 0) {
@@ -19,13 +19,13 @@ if (isset($_GET['categoria'])) {
       $nombre = $producto['nombre_prod'];
       $precio = number_format($producto['precio'], 2);
       $descripcion = $producto['descripcion'];
-      $foto = $producto['foto'];
+      $foto_frente = $producto['foto_frente'];
       $id_producto = (int)$producto['id_producto'];
 
       print '
         <div class="col">
           <div class="card h-100">
-            <img src="../img/' . $foto . '" class="card-img-top" alt="' . $nombre . '" width="355" height="300">
+            <img src="../img/' . $foto_frente . '" class="card-img-top" alt="' . $nombre . '" width="355" height="300">
             <div class="card-body">
               <h5 class="card-title">' . $nombre . '</h5>
               <p class="card-text">' . $descripcion . '</p>

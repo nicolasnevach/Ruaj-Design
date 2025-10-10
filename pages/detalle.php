@@ -10,7 +10,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id_producto = (int) $_GET['id'];
-$sql = "SELECT * FROM Producto WHERE id_producto = $id_producto LIMIT 1";
+$sql = "SELECT * FROM Producto WHERE id_producto = $id_producto AND activo = 1 LIMIT 1";
 $result = $conf->query($sql);
 
 if ($result->num_rows === 0) {
@@ -23,7 +23,9 @@ $producto = $result->fetch_assoc();
 $nombre = $producto['nombre_prod'];
 $descripcion = $producto['descripcion'];
 $precio = $producto['precio'];
-$foto = $producto['foto'];
+$foto_frente = $producto['foto_frente'];
+$foto_costado = $producto['foto_costado'];
+$foto_zoom = $producto['foto_zoom'];
 $id_categoria = $producto['id_categoria'];
 ?>
 
@@ -39,11 +41,19 @@ $id_categoria = $producto['id_categoria'];
   <div class="row">
     <div class="col-md-5">
       <div class="product-image-main mb-3">
-        <img src="../img/<?php print $foto; ?>" class="img-fluid rounded" alt="<?php print $nombre; ?>" id="main-product-image">
+        <img src="../img/<?php print $foto_frente; ?>" class="img-fluid rounded" alt="<?php print $nombre; ?>" id="main-product-image">
       </div>
-      <div class="row thumbnails">
+
+      <!-- Miniaturas -->
+      <div class="row thumbnails gx-2">
         <div class="col-3">
-          <img src="../img/<?php print $foto; ?>" class="img-fluid rounded thumb-img active" alt="Thumbnail">
+          <img src="../img/<?php print $foto_frente; ?>" class="img-fluid rounded thumb-img" alt="Foto frente" onclick="cambiarImagen(this)">
+        </div>
+        <div class="col-3">
+          <img src="../img/<?php print $foto_costado; ?>" class="img-fluid rounded thumb-img" alt="Foto costado" onclick="cambiarImagen(this)">
+        </div>
+        <div class="col-3">
+          <img src="../img/<?php print $foto_zoom; ?>" class="img-fluid rounded thumb-img" alt="Foto zoom" onclick="cambiarImagen(this)">
         </div>
       </div>
     </div>
@@ -54,37 +64,16 @@ $id_categoria = $producto['id_categoria'];
           <span class="badge bg-success">Nuevo</span>
           <span class="text-muted ms-2">| +50 vendidos</span>
         </div>
-        
+
         <h1 class="text-start product-title"><?php print $nombre; ?></h1>
 
         <div class="price-container mb-4">
           <h2 class="price">$<?php print $precio; ?></h2>
         </div>
 
-        <div class="payment-options mb-4">
-          <div class="payment-option mb-3">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="paymentOption" id="onePayment" checked>
-              <label class="form-check-label" for="onePayment">
-                <span class="payment-title">1 pago de $<?php print $precio; ?></span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="payment-option mb-3">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="paymentOption" id="installments">
-              <label class="form-check-label" for="installments">
-                <span class="payment-title">6 cuotas de $<?php print round($precio / 6, 2); ?></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
         <!-- Botones alineados -->
         <div class="row mb-4 align-items-end">
           <div class="col-md-6">
-            <!-- Formulario de compra directa -->
             <form id="formComprar" action="pagar_producto.php" method="POST">
               <input type="hidden" name="id" value="<?php print $id_producto; ?>">
               <div class="d-flex align-items-center mb-2">
@@ -102,10 +91,9 @@ $id_categoria = $producto['id_categoria'];
           </div>
 
           <div class="col-md-6">
-            <!-- Formulario independiente para agregar al carrito -->
             <form id="formCarrito" method="POST" action="agregar_carrito.php" class="h-100 d-flex flex-column justify-content-end">
               <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
-              <input type="hidden" name="cantidad" value="1">
+              <input type="hidden" id="cantidadCarrito" name="cantidad" value="1">
               <button type="submit" class="btn btn-outline-success w-100">
                 Agregar al carrito
               </button>
@@ -127,21 +115,22 @@ $id_categoria = $producto['id_categoria'];
     </div>
   </div>
 
+  <!-- Productos relacionados -->
   <div class="row mt-5">
     <div class="col-12">
       <h2 class="mb-4">Productos relacionados</h2>
     </div>
   </div>
-  
+
   <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
     <?php
-    $rel_sql = "SELECT * FROM Producto WHERE id_categoria = $id_categoria AND id_producto != $id_producto LIMIT 4";
+    $rel_sql = "SELECT * FROM Producto WHERE id_categoria = $id_categoria AND id_producto != $id_producto AND activo = 1 LIMIT 4";
     $rel_result = $conf->query($rel_sql);
 
     if ($rel_result && $rel_result->num_rows > 0) {
       while ($rel = $rel_result->fetch_assoc()) {
         $rel_nombre = $rel['nombre_prod'];
-        $rel_foto = $rel['foto'];
+        $rel_foto = $rel['foto_frente'];
         $rel_precio = $rel['precio'];
         $rel_id = $rel['id_producto'];
     ?>
@@ -163,5 +152,27 @@ $id_categoria = $producto['id_categoria'];
     ?>
   </div>
 </div>
+
+<!-- Scripts -->
+<script>
+  // Cambia la imagen principal
+  function cambiarImagen(elemento) {
+    const imagenPrincipal = document.getElementById('main-product-image');
+    imagenPrincipal.src = elemento.src;
+  }
+
+  // Sincroniza la cantidad seleccionada con el formulario de carrito
+  const selectCantidad = document.getElementById('quantity');
+  const inputCantidadCarrito = document.getElementById('cantidadCarrito');
+  const formCarrito = document.getElementById('formCarrito');
+
+  selectCantidad.addEventListener('change', () => {
+    inputCantidadCarrito.value = selectCantidad.value;
+  });
+
+  formCarrito.addEventListener('submit', () => {
+    inputCantidadCarrito.value = selectCantidad.value;
+  });
+</script>
 
 <?php include_once("../components/footer.php"); ?>

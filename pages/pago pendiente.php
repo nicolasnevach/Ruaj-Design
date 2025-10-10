@@ -11,7 +11,7 @@ include_once("../components/header.php");
     <p><strong>Estado:</strong> <?php echo htmlspecialchars($_GET['status']); ?></p>
   <?php endif; ?>
 
-  <a href="productos.php" class="btn btn-secondary mt-3">Seguir comprando</a>
+  <a href="productos_generales.php" class="btn btn-secondary mt-3">Seguir comprando</a>
 </div>
 
 <?php include_once("../components/footer.php"); ?>

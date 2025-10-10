@@ -2,10 +2,10 @@
 session_start();
 
 // Cargar SDK manual (sin Composer)
-require __DIR__ . '/../libs/mercadopago/mercadopago_autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // Configurar Access Token de prueba
-MercadoPago\SDK::setAccessToken("TU_ACCESS_TOKEN_DE_TEST");
+MercadoPago\SDK::setAccessToken("APP_USR-5066491151862490-091918-e2f93d2552e63ebdf6c50734ae895f53-2703255358");
 
 // Validar que haya productos en el carrito
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
@@ -30,9 +30,9 @@ $preference->items = $items;
 
 // URLs de retorno
 $preference->back_urls = [
-    "success" => "https://TUSITIO.com/pago_exitoso.php",
-    "failure" => "https://TUSITIO.com/pago_fallido.php",
-    "pending" => "https://TUSITIO.com/pago_pendiente.php"
+    "success" => "https://localhost/ruaj/pages/pago_exitoso.php",
+    "failure" => "https://localhost/ruaj/pages/pago_fallido.php",
+    "pending" => "https://localhost/ruaj/pages/pago_pendiente.php"
 ];
 $preference->auto_return = "approved";
 

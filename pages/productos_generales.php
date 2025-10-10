@@ -4,7 +4,7 @@ include_once("../components/header.php");
 ?>
 
 <?php
-$sql = "SELECT * FROM Producto";
+$sql = "SELECT * FROM Producto WHERE activo = '1'";
 $resultado = $conf->query($sql);
 
 if ($resultado->num_rows > 0) {
@@ -17,14 +17,15 @@ if ($resultado->num_rows > 0) {
         $nombre = $producto['nombre_prod'];
         $descripcion = $producto['descripcion'];
         $precio = $producto['precio'];
-        $foto = $producto['foto'];
-        $foto_alt = $producto['foto_alt']; // Nueva variable para la imagen hover
+        $foto_frente = $producto['foto_frente'];
+        $foto_costado = $producto['foto_costado'];
+        $foto_zoom = $producto['foto_zoom']; // Nueva variable para la imagen hover
 
         print '<div class="col">
                 <div class="card h-100">
                     <div class="img-hover-wrap">
-                        <img src="../img/' . $foto . '" class="img-front" alt="' . $nombre . '">
-                        <img src="../img/' . $foto_alt . '" class="img-hover" alt="' . $nombre . ' - Vista alternativa">
+                        <img src="../img/' . $foto_frente . '" class="img-front" alt="' . $nombre . '">
+                        <img src="../img/' . $foto_costado . '" class="img-hover" alt="' . $nombre . ' - Vista alternativa">
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">' . $nombre . '</h5>
@@ -42,7 +43,7 @@ if ($resultado->num_rows > 0) {
 }
 ?>
 
-<div class = "mg"></div>
+<div class ="mg"></div>
 
 <?php
 include_once("../components/footer.php");
