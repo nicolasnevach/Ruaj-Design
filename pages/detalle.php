@@ -4,19 +4,23 @@ include_once("../components/header.php");
 include_once("../conf/conf.php");
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-  print "<p class='text-center mt-5'>Producto no especificado.</p>";
-  include_once("../components/footer.php");
-  exit;
+    echo "<p class='text-center mt-5'>Producto no especificado.</p>";
+    include_once("../components/footer.php");
+    exit;
 }
 
 $id_producto = (int) $_GET['id'];
-$sql = "SELECT * FROM Producto WHERE id_producto = $id_producto AND activo = 1 LIMIT 1";
-$result = $conf->query($sql);
+
+// --- Producto principal (prepared statement) ---
+$stmt = $conf->prepare("SELECT * FROM Producto WHERE id_producto = ? AND activo = 1 LIMIT 1");
+$stmt->bind_param("i", $id_producto);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-  print "<p class='text-center mt-5'>Producto no encontrado.</p>";
-  include_once("../components/footer.php");
-  exit;
+    echo "<p class='text-center mt-5'>Producto no encontrado.</p>";
+    include_once("../components/footer.php");
+    exit;
 }
 
 $producto = $result->fetch_assoc();
@@ -27,6 +31,8 @@ $foto_frente = $producto['foto_frente'];
 $foto_costado = $producto['foto_costado'];
 $foto_zoom = $producto['foto_zoom'];
 $id_categoria = $producto['id_categoria'];
+
+$stmt->close();
 ?>
 
 <div class="container mt-4">
@@ -34,26 +40,25 @@ $id_categoria = $producto['id_categoria'];
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="inicio.php" class="text-decoration-none" style="color: var(--color-text);">Inicio</a></li>
       <li class="breadcrumb-item"><a href="productos_generales.php" class="text-decoration-none" style="color: var(--color-text);">Productos</a></li>
-      <li class="breadcrumb-item active" aria-current="page"><?php print $nombre; ?></li>
+      <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($nombre); ?></li>
     </ol>
   </nav>
 
   <div class="row">
     <div class="col-md-5">
       <div class="product-image-main mb-3">
-        <img src="../img/<?php print $foto_frente; ?>" class="img-fluid rounded" alt="<?php print $nombre; ?>" id="main-product-image">
+        <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" class="img-fluid rounded" alt="<?php echo htmlspecialchars($nombre); ?>" id="main-product-image">
       </div>
 
-      <!-- Miniaturas -->
       <div class="row thumbnails gx-2">
         <div class="col-3">
-          <img src="../img/<?php print $foto_frente; ?>" class="img-fluid rounded thumb-img" alt="Foto frente" onclick="cambiarImagen(this)">
+          <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" class="img-fluid rounded thumb-img" alt="Foto frente" onclick="cambiarImagen(this)">
         </div>
         <div class="col-3">
-          <img src="../img/<?php print $foto_costado; ?>" class="img-fluid rounded thumb-img" alt="Foto costado" onclick="cambiarImagen(this)">
+          <img src="../img/<?php echo htmlspecialchars($foto_costado); ?>" class="img-fluid rounded thumb-img" alt="Foto costado" onclick="cambiarImagen(this)">
         </div>
         <div class="col-3">
-          <img src="../img/<?php print $foto_zoom; ?>" class="img-fluid rounded thumb-img" alt="Foto zoom" onclick="cambiarImagen(this)">
+          <img src="../img/<?php echo htmlspecialchars($foto_zoom); ?>" class="img-fluid rounded thumb-img" alt="Foto zoom" onclick="cambiarImagen(this)">
         </div>
       </div>
     </div>
@@ -65,25 +70,22 @@ $id_categoria = $producto['id_categoria'];
           <span class="text-muted ms-2">| +50 vendidos</span>
         </div>
 
-        <h1 class="text-start product-title"><?php print $nombre; ?></h1>
+        <h1 class="text-start product-title"><?php echo htmlspecialchars($nombre); ?></h1>
 
         <div class="price-container mb-4">
-          <h2 class="price">$<?php print $precio; ?></h2>
+          <h2 class="price">$<?php echo number_format($precio, 2); ?></h2>
         </div>
 
-        <!-- Botones alineados -->
         <div class="row mb-4 align-items-end">
           <div class="col-md-6">
             <form id="formComprar" action="pagar_producto.php" method="POST">
-              <input type="hidden" name="id" value="<?php print $id_producto; ?>">
+              <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
               <div class="d-flex align-items-center mb-2">
                 <label for="quantity" class="me-2">Cantidad:</label>
                 <select class="form-select w-25" id="quantity" name="cantidad">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+                  <?php for($i=1;$i<=5;$i++): ?>
+                    <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                  <?php endfor; ?>
                 </select>
               </div>
               <button class="btn w-100 btn-success" type="submit">Comprar ahora</button>
@@ -107,7 +109,7 @@ $id_categoria = $producto['id_categoria'];
           </div>
           <div class="card-body">
             <ul class="list-unstyled">
-              <li class="mb-2"><strong>Descripción:</strong> <?php print nl2br($descripcion); ?></li>
+              <li class="mb-2"><strong>Descripción:</strong> <?php echo nl2br(htmlspecialchars($descripcion)); ?></li>
             </ul>
           </div>
         </div>
@@ -124,44 +126,45 @@ $id_categoria = $producto['id_categoria'];
 
   <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
     <?php
-    $rel_sql = "SELECT * FROM Producto WHERE id_categoria = $id_categoria AND id_producto != $id_producto AND activo = 1 LIMIT 4";
-    $rel_result = $conf->query($rel_sql);
+    // --- Productos relacionados con prepared statement ---
+    $stmt_rel = $conf->prepare("SELECT * FROM Producto WHERE id_categoria = ? AND id_producto != ? AND activo = 1 LIMIT 4");
+    $stmt_rel->bind_param("ii", $id_categoria, $id_producto);
+    $stmt_rel->execute();
+    $rel_result = $stmt_rel->get_result();
 
     if ($rel_result && $rel_result->num_rows > 0) {
-      while ($rel = $rel_result->fetch_assoc()) {
-        $rel_nombre = $rel['nombre_prod'];
-        $rel_foto = $rel['foto_frente'];
-        $rel_precio = $rel['precio'];
-        $rel_id = $rel['id_producto'];
+        while ($rel = $rel_result->fetch_assoc()) {
+            $rel_nombre = $rel['nombre_prod'];
+            $rel_foto = $rel['foto_frente'];
+            $rel_precio = $rel['precio'];
+            $rel_id = $rel['id_producto'];
     ?>
         <div class="col">
           <div class="card h-100">
-            <img src="../img/<?php print $rel_foto; ?>" class="card-img-top" alt="<?php print $rel_nombre; ?>">
+            <img src="../img/<?php echo htmlspecialchars($rel_foto); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($rel_nombre); ?>">
             <div class="card-body">
-              <h5 class="card-title"><?php print $rel_nombre; ?></h5>
-              <p class="card-text">$<?php print $rel_precio; ?></p>
-              <a class="btn btn-success" href="detalle.php?id=<?php print $rel_id; ?>">Comprar</a>
+              <h5 class="card-title"><?php echo htmlspecialchars($rel_nombre); ?></h5>
+              <p class="card-text">$<?php echo number_format($rel_precio, 2); ?></p>
+              <a class="btn btn-success" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
             </div>
           </div>
         </div>
     <?php
-      }
+        }
     } else {
-      print "<p class='text-center'>No hay productos relacionados.</p>";
+        echo "<p class='text-center'>No hay productos relacionados.</p>";
     }
+
+    $stmt_rel->close();
     ?>
   </div>
 </div>
 
-<!-- Scripts -->
 <script>
-  // Cambia la imagen principal
   function cambiarImagen(elemento) {
-    const imagenPrincipal = document.getElementById('main-product-image');
-    imagenPrincipal.src = elemento.src;
+    document.getElementById('main-product-image').src = elemento.src;
   }
 
-  // Sincroniza la cantidad seleccionada con el formulario de carrito
   const selectCantidad = document.getElementById('quantity');
   const inputCantidadCarrito = document.getElementById('cantidadCarrito');
   const formCarrito = document.getElementById('formCarrito');

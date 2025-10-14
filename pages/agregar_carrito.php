@@ -2,42 +2,45 @@
 session_start();
 include_once("../conf/conf.php");
 
-if (isset($_POST['id']) && isset($_POST['cantidad'])) {
-  $id = (int) $_POST['id'];
-  $cantidad = (int) $_POST['cantidad'];
-  if ($cantidad < 1) {
-    $cantidad = 1;
-  }
-
-  $sql = "SELECT * FROM Producto WHERE id_producto = $id";
-  $resultado = $conf->query($sql);
-  $producto = $resultado->fetch_assoc();
-
-  if ($producto) {
-    if (!isset($_SESSION['carrito'])) {
-      $_SESSION['carrito'] = array();
-    }
-
-    if (isset($_SESSION['carrito'][$id])) {
-      $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
-    } else {
-      $_SESSION['carrito'][$id] = array(
-        'nombre' => $producto['nombre_prod'],
-        'precio' => $producto['precio'],
-        'foto' => $producto['foto_zoom'],
-        'cantidad' => $cantidad
-      );
-    }
-
-    // 🔄 Volvemos al detalle del producto en lugar de ir al carrito
-    header("Location: detalle.php?id=$id&ok=1");
+if (!isset($_POST['id'], $_POST['cantidad'])) {
+    header("Location: productos.php?error=datos");
     exit;
-  } else {
-    header("Location: detalle.php?id=$id&error=producto");
-    exit;
-  }
 }
 
-header("Location: productos.php?error=datos");
+// Validar y limpiar datos
+$id = (int) $_POST['id'];
+$cantidad = max(1, (int) $_POST['cantidad']); // cantidad mínima 1
+
+// Prepared statement para mayor seguridad
+$stmt = $conf->prepare("SELECT nombre_prod, precio, foto_zoom FROM Producto WHERE id_producto = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$resultado = $stmt->get_result();
+$producto = $resultado->fetch_assoc();
+
+if (!$producto) {
+    header("Location: detalle.php?id=$id&error=producto");
+    exit;
+}
+
+// Inicializar carrito si no existe
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
+}
+
+// Agregar o actualizar cantidad en el carrito
+if (isset($_SESSION['carrito'][$id])) {
+    $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
+} else {
+    $_SESSION['carrito'][$id] = [
+        'nombre' => $producto['nombre_prod'],
+        'precio'  => $producto['precio'],
+        'foto'    => $producto['foto_zoom'],
+        'cantidad'=> $cantidad
+    ];
+}
+
+// Redirigir al detalle del producto con mensaje de éxito
+header("Location: detalle.php?id=$id&ok=1");
 exit;
 ?>

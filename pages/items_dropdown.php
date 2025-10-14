@@ -7,7 +7,7 @@ $res = $conf->query($sql);
 if ($res && $res->num_rows > 0) {
   while ($row = $res->fetch_assoc()) {
     $nombre = $row['nombre_cat'];
-    $id = $row['id_categoria'];
+    $id = (int)$row['id_categoria']; // Aseguramos que sea un entero
     print "<a href='productos.php?categoria=$id' class='dropdown-item'>$nombre</a>";
   }
 } else {

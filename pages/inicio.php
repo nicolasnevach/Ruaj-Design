@@ -12,37 +12,26 @@ include_once("../components/header.php");
   
       <!-- Bloque de texto -->
       <div class="col-lg-6 d-flex flex-column justify-content-start">
-
-        <!-- Encabezado principal bien alineado -->
-        <h1 class="display-5 fw-bold lh-1 mb-4 ruaj" >RUAJ DESIGN</h1>
-        
-        <!-- Subtítulo alineado -->
-        <p class="lead fw-bold fs-3 mb-3" id = "dte">Diseñá tu estilo</p>
-        
-        <!-- Botón alineado -->
+        <h1 class="display-5 fw-bold lh-1 mb-4 ruaj">RUAJ DESIGN</h1>
+        <p class="lead fw-bold fs-3 mb-3" id="dte">Diseñá tu estilo</p>
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
           <a class="btn btn-outline-success btn-lg" id="but" href="contacto.php">Arma tu diseño!</a>
         </div>
-
       </div>
 
     </div>
   </div>
 </section>
 
-
-
 <section class="sobre-nosotros">
   <div class="contenido">
     <h2><strong>Sobre Nosotros!</strong></h2>
     <p>
       Somos una empresa dedicada a la fabricación de una gran variedad de productos realizados en madera de pino, álamo, petiribí y melaminas, todo de excelente calidad, para satisfacer todas las necesidades de amoblamiento de tu hogar al mejor precio del mercado, brindando también la posibilidad de poder diseñarlos y realizarlos a tu medida.
-      
       Contamos con 10 años de trayectoria en el rubro, lo que garantiza la calidad y dedicación en nuestros productos.
     </p>
   </div>
 </section>
-
 
 <section class="section-fondo marg mg">
   <h1 class="dest titu mg">Productos Destacados:</h1>
@@ -52,32 +41,34 @@ include_once("../components/header.php");
 <?php
 include_once("../conf/conf.php");
 
-$productos_destacados = ['Mesa de luz Amelia', 'Biblioteca', 'Escritorio Olivia'];
-$lista_nombres = "'" . implode("','", $productos_destacados) . "'";
+$productos_destacados = ['Mesa de Luz Dubai', 'Rack Palermo', 'Recibidor Londres'];
+
+// Escapamos nombres para seguridad
+$productos_destacados_esc = array_map([$conf, 'real_escape_string'], $productos_destacados);
+$lista_nombres = "'" . implode("','", $productos_destacados_esc) . "'";
 
 $sql = "SELECT * FROM Producto WHERE nombre_prod IN ($lista_nombres)";
 $resultado = $conf->query($sql);
 
 if ($resultado && $resultado->num_rows > 0) {
   while ($producto = $resultado->fetch_assoc()) {
-    $nombre = $producto['nombre_prod'];
-    $descripcion = $producto['descripcion'];
-    $foto = $producto['foto'];
-    $id = $producto['id_producto'];
-    $foto_alt = $producto['foto_alt'];
-    $fotoHover = $foto_alt != "" ? $foto_alt : "fondo.jpg";
+    $nombre = htmlspecialchars($producto['nombre_prod']);
+    $descripcion = htmlspecialchars($producto['descripcion']);
+    $foto_frente = htmlspecialchars($producto['foto_frente']);
+    $id = (int)$producto['id_producto'];
+    $foto_costado = htmlspecialchars($producto['foto_costado']);
     ?>
 
     <div class="col">
       <div class="card h-100">
         <div class="img-hover-wrap">
-          <img src="../img/<?php print $foto; ?>" class="img-front" alt="<?php print $nombre; ?>" width="355" height="200">
-          <img src="../img/<?php print $fotoHover; ?>" class="img-hover" alt="Imagen alternativa" width="355" height="200">
+          <img src="../img/<?php echo $foto_frente; ?>" class="img-front" alt="<?php echo $nombre; ?>" width="355" height="200" loading="lazy">
+          <img src="../img/<?php echo $foto_costado; ?>" class="img-hover" alt="Imagen alternativa" width="355" height="200" loading="lazy">
         </div>
         <div class="card-body">
-          <h5 class="card-title"><?php print $nombre; ?></h5>
-          <p class="card-text"><?php print $descripcion; ?></p>
-          <a class="btn btn-outline-success" id="prod" href="detalle.php?id=<?php print $id; ?>">Comprar</a>
+          <h5 class="card-title"><?php echo $nombre; ?></h5>
+          <p class="card-text"><?php echo $descripcion; ?></p>
+          <a class="btn btn-outline-success" id="prod" href="detalle.php?id=<?php echo $id; ?>">Comprar</a>
         </div>
         <div class="card-footer">
           <small class="text-body-secondary">Producto destacado del mes</small>
@@ -88,14 +79,13 @@ if ($resultado && $resultado->num_rows > 0) {
     <?php
   }
 } else {
-  print "<p>No hay productos destacados disponibles.</p>";
+  echo "<p>No hay productos destacados disponibles.</p>";
 }
 ?>
 
     </div>
   </div>
 </section>
-
 
 <section class="doble-columna">
   <div class="columna texto">
@@ -104,7 +94,7 @@ if ($resultado && $resultado->num_rows > 0) {
     <a href="https://wa.me/541138131307" class="boton"><strong>Manos a la obra! Diseñemos tu mueble!</strong></a>
   </div>
   <div class="columna imagenes">
-    <img src="../img/planos.jpg" alt="planos" />
+    <img src="../img/planos.jpg" alt="planos" loading="lazy" />
   </div>
 </section>
 
@@ -118,7 +108,6 @@ if ($resultado && $resultado->num_rows > 0) {
     <a href="https://wa.me/541138131307" class="boton"><strong>Ir a Whatsapp</strong></a>
   </div>
 </section>
-
 
 <?php
 include_once("../components/footer.php");

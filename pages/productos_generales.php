@@ -18,19 +18,18 @@ if ($resultado->num_rows > 0) {
         $descripcion = $producto['descripcion'];
         $precio = $producto['precio'];
         $foto_frente = $producto['foto_frente'];
-        $foto_costado = $producto['foto_costado'];
-        $foto_zoom = $producto['foto_zoom']; // Nueva variable para la imagen hover
+        $foto_costado = $producto['foto_costado']; // Imagen hover
 
         print '<div class="col">
                 <div class="card h-100">
                     <div class="img-hover-wrap">
-                        <img src="../img/' . $foto_frente . '" class="img-front" alt="' . $nombre . '">
-                        <img src="../img/' . $foto_costado . '" class="img-hover" alt="' . $nombre . ' - Vista alternativa">
+                        <img src="../img/' . $foto_frente . '" class="img-front" alt="' . htmlspecialchars($nombre) . ' - Vista frontal">
+                        <img src="../img/' . $foto_costado . '" class="img-hover" alt="' . htmlspecialchars($nombre) . ' - Vista costado">
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">' . $nombre . '</h5>
-                        <p class="card-text">' . $descripcion . '</p>
-                        <p class="card-text"><strong>Precio: $' . $precio . '</strong></p>
+                        <h5 class="card-title">' . htmlspecialchars($nombre) . '</h5>
+                        <p class="card-text">' . htmlspecialchars($descripcion) . '</p>
+                        <p class="card-text"><strong>Precio: $' . number_format($precio,2) . '</strong></p>
                         <a class="btn btn-outline-success" href="../pages/detalle.php?id=' . $id . '">Comprar</a>
                     </div>
                 </div>
