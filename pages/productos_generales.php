@@ -28,7 +28,6 @@ if ($resultado->num_rows > 0) {
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">' . htmlspecialchars($nombre) . '</h5>
-                        <p class="card-text">' . htmlspecialchars($descripcion) . '</p>
                         <p class="card-text"><strong>Precio: $' . number_format($precio,2) . '</strong></p>
                         <a class="btn btn-outline-success" href="../pages/detalle.php?id=' . $id . '">Comprar</a>
                     </div>

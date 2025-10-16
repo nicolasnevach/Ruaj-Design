@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ruaj</title>
 
+  <link rel="icon" href="../img/favicon.png" type="image/png">
+
+
   <!-- Estilos -->
   <link rel="stylesheet" href="../css/estilos.css">
 
@@ -20,13 +23,13 @@
     <div class="container-fluid">
       <div class="d-lg-none position-absolute start-50 translate-middle-x" style="top: 15px;">
         <a href="inicio.php">
-            <img src="../img/logo.jpg" alt="Sheva" width="70" height="70">
+            <img src="../img/favicon.png" alt="Sheva" width="70" height="70">
         </a>
       </div>
     
       <div class="d-none d-lg-block">
         <a href="inicio.php" class="me-4">
-            <img src="../img/logo.jpg" alt="Sheva" width="70" height="70">
+            <img src="../img/favicon.png" alt="Sheva" width="70" height="70">
         </a>
       </div>
 
@@ -42,7 +45,7 @@
            aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
           <a class="navbar-brand" href="inicio.php">
-            <img src="../img/logo.jpg" alt="Sheva" width="70" height="70">
+            <img src="../img/favicon.png" alt="Sheva" width="70" height="70">
           </a>
           <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Sheva</h5>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
@@ -75,9 +78,6 @@
     <div class="navbar-social">
       <a href="mailto:ruajdesign@gmail.com" target="_blank">
         <img src="../img/gmail.png" alt="Gmail">
-      </a>
-      <a href="https://maps.google.com/?q=tu+ubicacion" target="_blank">
-        <img src="../img/maps.png" alt="Maps">
       </a>
       <a href="https://www.instagram.com/ruajmuebles/" target="_blank">
         <img src="../img/instagram.png" alt="Instagram">

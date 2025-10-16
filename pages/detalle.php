@@ -76,32 +76,26 @@ $stmt->close();
           <h2 class="price">$<?php echo number_format($precio, 2); ?></h2>
         </div>
 
-        <div class="row mb-4 align-items-end">
-          <div class="col-md-6">
-            <form id="formComprar" action="pagar_producto.php" method="POST">
-              <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
-              <div class="d-flex align-items-center mb-2">
-                <label for="quantity" class="me-2">Cantidad:</label>
-                <select class="form-select w-25" id="quantity" name="cantidad">
-                  <?php for($i=1;$i<=5;$i++): ?>
-                    <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                  <?php endfor; ?>
-                </select>
-              </div>
-              <button class="btn w-100 btn-success" type="submit">Comprar ahora</button>
-            </form>
-          </div>
+        <div class="producto-compra mb-4">
+  <form id="formComprar" action="pagar_producto.php" method="POST">
+    <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
+    <label for="quantity" class="me-2">Cantidad:</label>
+    <select class="form-select w-auto d-inline-block" id="quantity" name="cantidad">
+      <?php for($i=1;$i<=5;$i++): ?>
+        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+      <?php endfor; ?>
+    </select>
+  </form>
 
-          <div class="col-md-6">
-            <form id="formCarrito" method="POST" action="agregar_carrito.php" class="h-100 d-flex flex-column justify-content-end">
-              <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
-              <input type="hidden" id="cantidadCarrito" name="cantidad" value="1">
-              <button type="submit" class="btn btn-outline-success w-100">
-                Agregar al carrito
-              </button>
-            </form>
-          </div>
-        </div>
+  <form id="formCarrito" method="POST" action="agregar_carrito.php" class="mt-3">
+    <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
+    <input type="hidden" id="cantidadCarrito" name="cantidad" value="1">
+    <button type="submit" class="btn btn-outline-success btn-agregar w-100">
+      Agregar al carrito
+    </button>
+  </form>
+</div>
+
 
         <div class="card mt-4">
           <div class="card-header">

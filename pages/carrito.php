@@ -58,7 +58,7 @@ foreach ($carrito as $id => $item) {
         </div>
 
         <div class="text-end mt-3">
-            <a href="pagar_carrito.php" class="btn btn-success me-2">Finalizar compra</a>
+            <a href="prepago.php" class="btn btn-success me-2">Finalizar compra</a>
             <a class="btn btn-outline-success" href="../pages/productos_generales.php">Seguir comprando</a>
         </div>
     <?php endif; ?>
