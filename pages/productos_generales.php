@@ -22,13 +22,17 @@ if ($resultado->num_rows > 0) {
 
         print '<div class="col">
                 <div class="card h-100">
-                    <div class="img-hover-wrap">
+                    
+                    <!-- 🔹 Enlace agregado alrededor de las imágenes -->
+                    <a href="detalle.php?id=' . $id . '" class="img-hover-wrap" style="text-decoration: none; color: inherit;">
                         <img src="../img/' . $foto_frente . '" class="img-front" alt="' . htmlspecialchars($nombre) . ' - Vista frontal">
                         <img src="../img/' . $foto_costado . '" class="img-hover" alt="' . htmlspecialchars($nombre) . ' - Vista costado">
-                    </div>
+                    </a>
+                    
+
                     <div class="card-body">
                         <h5 class="card-title">' . htmlspecialchars($nombre) . '</h5>
-                        <p class="card-text"><strong>Precio: $' . number_format($precio,2) . '</strong></p>
+                        <p class="card-text"><strong>Precio: $' . number_format($precio, 2) . '</strong></p>
                         <a class="btn btn-outline-success" href="../pages/detalle.php?id=' . $id . '">Comprar</a>
                     </div>
                 </div>
@@ -41,7 +45,7 @@ if ($resultado->num_rows > 0) {
 }
 ?>
 
-<div class ="mg"></div>
+<div class="mg"></div>
 
 <?php
 include_once("../components/footer.php");

@@ -444,11 +444,11 @@ input[type="submit"] {
 }
 
 .sobre-nosotros {
-  background-color: #f27102;
+  background-color: var(--color-nav);
   min-height: 50vh;
   padding: 60px 20px;
   text-align: center;
-  color: #000;
+  color: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -471,6 +471,25 @@ input[type="submit"] {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+
+/* Color del circulito del contador (badge) */
+.carrito-contador {
+  background-color: var(--color-nav-text) !important; /* Rojo suave, cambialo por el color que quieras */
+  color: var(--color-background) !important; /* Color del número dentro del circulito */
+}
+
+/* Color del texto del precio total */
+.carrito-total {
+  color: var(--color-background) !important; /* Verde, cambialo por tu preferido */
+}
+
+/* Texto "Total carrito" */
+.carrito-label {
+  color: var(--color-background); /* Cambiá el color si querés */
+  font-size: 0.75rem;
+  margin-left: 4px;
 }
 
 /* Fondo gris claro a la izquierda */

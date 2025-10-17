@@ -27,7 +27,7 @@ include_once("../components/header.php");
   <div class="contenido">
     <h2><strong>Sobre Nosotros!</strong></h2>
     <p>
-      Somos una empresa dedicada a la fabricación de una gran variedad de productos realizados en madera de pino, álamo, petiribí y melaminas, todo de excelente calidad, para satisfacer todas las necesidades de amoblamiento de tu hogar al mejor precio del mercado, brindando también la posibilidad de poder diseñarlos y realizarlos a tu medida.
+      Somos una empresa dedicada a la fabricación de una gran variedad de productos realizados en madera de pino, álamo, petiribí y melaminas, todo de excelente calidad, para satisfacer todas las necesidades de amoblamiento de tu hogar y negocio al mejor precio del mercado, brindando también la posibilidad de poder diseñarlos y realizarlos a tu medida.
       Contamos con 10 años de trayectoria en el rubro, lo que garantiza la calidad y dedicación en nuestros productos.
     </p>
   </div>
@@ -91,7 +91,7 @@ if ($resultado && $resultado->num_rows > 0) {
   <div class="columna texto">
     <h2><strong>PODEMOS ASESORARTE</strong></h2>
     <p>Queremos ayudarte a hacer realidad el mueble que soñás!</p>
-    <a href="https://wa.me/541138131307" class="boton"><strong>Manos a la obra! Diseñemos tu mueble!</strong></a>
+    <a target="_blank" href="https://wa.me/541138131307" class="boton"><strong>Manos a la obra! Diseñemos tu mueble!</strong></a>
   </div>
   <div class="columna imagenes">
     <img src="../img/planos.jpg" alt="planos" loading="lazy" />

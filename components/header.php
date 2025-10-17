@@ -1,3 +1,20 @@
+<?php
+// Iniciar sesión si no está iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Calcular cantidad total de productos y total en dinero
+$contador_carrito = 0;
+$total_carrito = 0.00;
+
+if (isset($_SESSION['carrito'])) {
+    foreach ($_SESSION['carrito'] as $item) {
+        $contador_carrito += $item['cantidad'];
+        $total_carrito += $item['precio'] * $item['cantidad'];
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +23,6 @@
   <title>Ruaj</title>
 
   <link rel="icon" href="../img/favicon.png" type="image/png">
-
 
   <!-- Estilos -->
   <link rel="stylesheet" href="../css/estilos.css">
@@ -75,23 +91,42 @@
       </div>
     </div>
 
-    <div class="navbar-social">
-      <a href="mailto:ruajdesign@gmail.com" target="_blank">
+    <div class="navbar-social d-flex align-items-center">
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ruajdesign@gmail.com&su=Mi%20Mueble" target="_blank" class="me-2">
         <img src="../img/gmail.png" alt="Gmail">
       </a>
-      <a href="https://www.instagram.com/ruajmuebles/" target="_blank">
+      <a href="https://www.instagram.com/ruajmuebles/" target="_blank" class="me-2">
         <img src="../img/instagram.png" alt="Instagram">
       </a>
-      <a href="https://www.facebook.com/ruajdesign" target="_blank">
+      <a href="https://www.facebook.com/ruajdesign" target="_blank" class="me-2">
         <img src="../img/facebook.png" alt="Facebook">
       </a>
-      <a href="https://wa.me/541138131307" target="_blank">
+      <a href="https://wa.me/541138131307" target="_blank" class="me-2">
         <img src="../img/wpp.png" alt="WhatsApp">
       </a>
-      <a href="../pages/carrito.php">
-        <img src="../img/carrito.png" alt="Carrito">
-      </a>
+
+ <!-- 🛒 Carrito con contador al lado y total al lado del icono -->
+<a href="../pages/carrito.php" class="carrito-link d-flex align-items-center text-decoration-none">
+
+  <!-- Contenedor del icono y contador -->
+  <div class="carrito-icono position-relative d-flex align-items-center">
+    <img src="../img/carrito.png" alt="Carrito" width="32">
+    <?php if ($contador_carrito > 0): ?>
+      <span class="carrito-contador badge rounded-pill">
+        <?= $contador_carrito ?>
+      </span>
+    <?php endif; ?>
+  </div>
+
+  <!-- Contenedor del texto Total carrito al lado del icono -->
+  <div class="carrito-info ms-2 d-flex flex-column">
+    <span class="carrito-label">Total carrito</span>
+    <span class="carrito-total">$<?= number_format($total_carrito, 2) ?></span>
+  </div>
+
+</a>
+
+
+
     </div>
   </nav>
-
-
