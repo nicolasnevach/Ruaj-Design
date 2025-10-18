@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: prepago.php?error=bd_error");
         exit();
     }
-    
+     
     $conf->close();
     
 } else {

@@ -23,31 +23,34 @@ foreach ($carrito as $id => $item) {
         <div class="table-responsive">
             <table class="table align-middle text-center">
                 <thead>
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Producto</th>
-                        <th>Precio unitario</th>
-                        <th>Cantidad</th>
-                        <th>Subtotal</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($carrito as $id => $item): ?>
-                        <tr>
-                            <td>
-                                <img src="../img/<?= htmlspecialchars($item['foto']) ?>" alt="<?= htmlspecialchars($item['nombre']) ?>" width="80">
-                            </td>
-                            <td><?= htmlspecialchars($item['nombre']) ?></td>
-                            <td>$<?= number_format($item['precio'], 2) ?></td>
-                            <td><?= (int)$item['cantidad'] ?></td>
-                            <td>$<?= number_format($item['subtotal'], 2) ?></td>
-                            <td>
-                                <a href="eliminar_carrito.php?id=<?= (int)$id ?>" class="btn btn-danger btn-sm">Eliminar</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
+    <tr>
+        <th>Imagen</th>
+        <th>Producto</th>
+        <th>Medida</th>
+        <th>Precio unitario</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acciones</th>
+    </tr>
+</thead>
+<tbody>
+    <?php foreach ($carrito as $clave => $item): ?>
+        <tr>
+            <td>
+                <img src="../img/<?= htmlspecialchars($item['foto']) ?>" alt="<?= htmlspecialchars($item['nombre']) ?>" width="80">
+            </td>
+            <td><?= htmlspecialchars($item['nombre']) ?></td>
+            <td><?= htmlspecialchars($item['medida']) ?></td>
+            <td>$<?= number_format($item['precio'], 2) ?></td>
+            <td><?= (int)$item['cantidad'] ?></td>
+            <td>$<?= number_format($item['subtotal'], 2) ?></td>
+            <td>
+                <a href="eliminar_carrito.php?id=<?= urlencode($clave) ?>" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</tbody>
+
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-end"><strong>Total:</strong></td>

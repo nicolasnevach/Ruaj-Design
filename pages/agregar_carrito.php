@@ -2,17 +2,19 @@
 session_start();
 include_once("../conf/conf.php");
 
-if (!isset($_POST['id'], $_POST['cantidad'])) {
+if (!isset($_POST['id'], $_POST['cantidad'], $_POST['precio'], $_POST['medida'])) {
     header("Location: productos.php?error=datos");
     exit;
 }
 
-// Validar y limpiar datos
+// Limpiar y validar datos
 $id = (int) $_POST['id'];
-$cantidad = max(1, (int) $_POST['cantidad']); // cantidad mínima 1
+$cantidad = max(1, (int) $_POST['cantidad']);
+$precio = (float) $_POST['precio'];
+$medida = trim($_POST['medida']);
 
-// Prepared statement para mayor seguridad
-$stmt = $conf->prepare("SELECT nombre_prod, precio, foto_zoom FROM Producto WHERE id_producto = ?");
+// Prepared statement para obtener datos del producto
+$stmt = $conf->prepare("SELECT nombre_prod, foto_zoom FROM Producto WHERE id_producto = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $resultado = $stmt->get_result();
@@ -28,19 +30,23 @@ if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
 
+// Clave única por producto + medida
+$clave = $id . '_' . md5($medida);
+
 // Agregar o actualizar cantidad en el carrito
-if (isset($_SESSION['carrito'][$id])) {
-    $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
+if (isset($_SESSION['carrito'][$clave])) {
+    $_SESSION['carrito'][$clave]['cantidad'] += $cantidad;
 } else {
-    $_SESSION['carrito'][$id] = [
-        'nombre' => $producto['nombre_prod'],
-        'precio'  => $producto['precio'],
-        'foto'    => $producto['foto_zoom'],
-        'cantidad'=> $cantidad
+    $_SESSION['carrito'][$clave] = [
+        'nombre'   => $producto['nombre_prod'],
+        'precio'   => $precio,
+        'foto'     => $producto['foto_zoom'],
+        'cantidad' => $cantidad,
+        'medida'   => $medida
     ];
 }
 
-// Redirigir al detalle del producto con mensaje de éxito
+// Redirigir al detalle con mensaje de éxito
 header("Location: detalle.php?id=$id&ok=1");
 exit;
 ?>
