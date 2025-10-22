@@ -16,7 +16,6 @@ if (isset($_GET['categoria'])) {
         while ($producto = $resultado->fetch_assoc()) {
             $nombre = htmlspecialchars($producto['nombre_prod']);
             $precio = number_format($producto['precio'], 2);
-            $descripcion = htmlspecialchars($producto['descripcion']);
             $foto_frente = $producto['foto_frente'];
             $foto_costado = $producto['foto_costado']; // Hover
             $id_producto = (int)$producto['id_producto'];
@@ -30,7 +29,6 @@ if (isset($_GET['categoria'])) {
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">' . $nombre . '</h5>
-                        <p class="card-text">' . $descripcion . '</p>
                         <p class="card-text"><strong>Precio: $' . $precio . '</strong></p>
                         <a class="btn btn-outline-success" id="prod" href="../pages/detalle.php?id=' . $id_producto . '">Comprar</a>
                     </div>

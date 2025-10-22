@@ -53,7 +53,7 @@ $resultado = $conf->query($sql);
 if ($resultado && $resultado->num_rows > 0) {
   while ($producto = $resultado->fetch_assoc()) {
     $nombre = htmlspecialchars($producto['nombre_prod']);
-    $descripcion = htmlspecialchars($producto['descripcion']);
+    $precio = htmlspecialchars($producto['precio']);
     $foto_frente = htmlspecialchars($producto['foto_frente']);
     $id = (int)$producto['id_producto'];
     $foto_costado = htmlspecialchars($producto['foto_costado']);
@@ -67,7 +67,7 @@ if ($resultado && $resultado->num_rows > 0) {
         </div>
         <div class="card-body">
           <h5 class="card-title"><?php echo $nombre; ?></h5>
-          <p class="card-text"><?php echo $descripcion; ?></p>
+          <p class="card-text"><strong>Precio: <?php echo $precio; ?></strong></p>
           <a class="btn btn-outline-success" id="prod" href="detalle.php?id=<?php echo $id; ?>">Comprar</a>
         </div>
         <div class="card-footer">

@@ -365,17 +365,20 @@ input[type="submit"] {
    TARJETAS Y CONTENEDORES
    ============================================ */
 .card {
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    transition: var(--transition-default);
-    border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
+
 .card-img-top {
-    height: 200px;      /* Fijá la altura que prefieras */
-    width: 100%;        /* Que ocupe todo el ancho de la card */
-    object-fit: cover;  /* Ajusta la imagen para cubrir el espacio sin deformarse */
+  width: 100%;
+  aspect-ratio: 4 / 3; /* proporción estándar; podés probar 1/1 para cuadradas */
+  object-fit: cover;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
+
 
 
 .card:hover {
@@ -425,7 +428,7 @@ input[type="submit"] {
 .img-hover-wrap {
   position: relative;
   width: 100%;
-  height: 300px; /* Altura fija para las cards de productos */
+  height: 450px; /* 🔹 Aumentar de 300px a 400px o más */
   overflow: hidden;
 }
 

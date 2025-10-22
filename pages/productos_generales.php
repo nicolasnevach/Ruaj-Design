@@ -15,7 +15,6 @@ if ($resultado->num_rows > 0) {
     while ($producto = $resultado->fetch_assoc()) {
         $id = $producto['id_producto'];
         $nombre = $producto['nombre_prod'];
-        $descripcion = $producto['descripcion'];
         $precio = $producto['precio'];
         $foto_frente = $producto['foto_frente'];
         $foto_costado = $producto['foto_costado']; // Imagen hover

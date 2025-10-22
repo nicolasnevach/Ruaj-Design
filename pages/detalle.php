@@ -142,7 +142,16 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
           </div>
           <div class="card-body">
             <ul class="list-unstyled">
-              <li class="mb-2"><strong>Descripción:</strong> <?php echo nl2br(htmlspecialchars($descripcion)); ?></li>
+              <li class="mb-2"><p><strong>Descripción:</strong></p> <?php echo nl2br(htmlspecialchars($descripcion)); ?></li>
+              <p><strong>Envíos a todo el país:</strong> <br><br>
+
+Realizamos envíos a domicilio en todo el territorio nacional.
+El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra.
+<strong>El valor del flete corre por cuenta del cliente.</strong> <br><br>
+
+<strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
+
+Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
             </ul>
           </div>
         </div>
