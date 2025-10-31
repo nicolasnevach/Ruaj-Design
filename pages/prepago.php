@@ -79,6 +79,16 @@ if (isset($_GET['error'])) {
                         <textarea id="comentarios" name="comentarios" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
                     </div>
 
+                    <div class="alert alert-info mt-4 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+          
+          <div>
+            <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
+            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos contigo todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+          </div>
+        </div>
+      </div>
+                    
                     <div class="submit-container">
                         <button type="submit" class="btn btn-success btn-lg" style="width: 100%;">
                             Continuar al pago
@@ -112,6 +122,7 @@ if (isset($_GET['error'])) {
                             <div class="producto-precio">
                                 Subtotal: $<?= number_format($item['subtotal'], 2) ?>
                             </div>
+                            
                         </div>
                     </div>
                 <?php endforeach; ?>

@@ -49,7 +49,7 @@ $stmt_medidas->close();
 $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$precio];
 ?>
 
-<link rel="stylesheet" href="../css/estilos.css">
+
 
 <div class="container mt-4">
   <nav aria-label="breadcrumb">
@@ -143,6 +143,17 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
           <div class="card-body">
             <ul class="list-unstyled">
               <li class="mb-2"><p><strong>Descripción:</strong></p> <?php echo nl2br(htmlspecialchars($descripcion)); ?></li>
+
+<div class="alert alert-info mt-4 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+          
+          <div>
+            <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
+            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos contigo todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+          </div>
+        </div>
+      </div>
+
               <p><strong>Envíos a todo el país:</strong> <br><br>
 
 Realizamos envíos a domicilio en todo el territorio nacional.

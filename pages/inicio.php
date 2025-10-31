@@ -5,10 +5,27 @@ include_once("../components/header.php");
   <div class="container col-xxl-8 px-4 py-5">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
 
-      <!-- Imagen del mueble -->
-      <div class="col-10 col-sm-8 col-lg-6">
-        <img src="../img/mueble.jpg" class="d-block mx-lg-auto img-fluid" alt="Diseño de mueble" width="700" height="500" loading="lazy">
-      </div>
+      <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://placehold.co/250x100" class="d-block w-100" alt="1">
+    </div>
+    <div class="carousel-item">
+      <img src="https://placehold.co/250x100" class="d-block w-100" alt="2">
+    </div>
+    <div class="carousel-item">
+      <img src="https://placehold.co/250x100" class="d-block w-100" alt="3">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
   
       <!-- Bloque de texto -->
       <div class="col-lg-6 d-flex flex-column justify-content-start">
@@ -100,8 +117,10 @@ if ($resultado && $resultado->num_rows > 0) {
 
 <section id="contacto" class="doble-columna">
   <div class="columna section-fondo">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" width="875" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+</div>
   <div class="columna texto section-fondo">
     <h2><strong>CONTACTO FÁBRICA</strong></h2>
     <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 <strong>Dirección:</strong> Av. Elcano 4012 CHACARITA - CABA.</p>

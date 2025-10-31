@@ -92,18 +92,7 @@ if (isset($_SESSION['carrito'])) {
     </div>
 
     <div class="navbar-social d-flex align-items-center">
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ruajdesign@gmail.com&su=Mi%20Mueble" target="_blank" class="me-2">
-        <img src="../img/gmail.png" alt="Gmail">
-      </a>
-      <a href="https://www.instagram.com/ruajmuebles/" target="_blank" class="me-2">
-        <img src="../img/instagram.png" alt="Instagram">
-      </a>
-      <a href="https://www.facebook.com/ruajdesign" target="_blank" class="me-2">
-        <img src="../img/facebook.png" alt="Facebook">
-      </a>
-      <a href="https://wa.me/541138131307" target="_blank" class="me-2">
-        <img src="../img/wpp.png" alt="WhatsApp">
-      </a>
+      
 
  <!-- 🛒 Carrito con contador al lado y total al lado del icono -->
 <a href="../pages/carrito.php" class="carrito-link d-flex align-items-center text-decoration-none">

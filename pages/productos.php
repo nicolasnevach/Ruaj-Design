@@ -5,12 +5,24 @@ include_once("../components/header.php");
 if (isset($_GET['categoria'])) {
     $categoria_id = (int)$_GET['categoria'];
 
+    // 🔹 Obtener nombre de la categoría
+    $sql_cat = "SELECT nombre_cat FROM categorias WHERE id_categoria = $categoria_id";
+    $resultado_cat = $conf->query($sql_cat);
+    $nombre_categoria = "Productos"; // valor por defecto
+
+    if ($resultado_cat && $resultado_cat->num_rows > 0) {
+        $cat = $resultado_cat->fetch_assoc();
+        $nombre_categoria = htmlspecialchars($cat['nombre_cat']);
+    }
+
+    // 🔹 Obtener productos de la categoría
     $sql = "SELECT * FROM Producto WHERE id_categoria = $categoria_id AND activo = 1";
     $resultado = $conf->query($sql);
 
     if ($resultado && $resultado->num_rows > 0) {
         print '<div class="container mt-4">';
-        print '<h2 class="mb-4">Productos</h2>';
+        // Aquí reemplazamos "Productos" por el nombre de la categoría
+        print '<h2 class="mb-4">' . $nombre_categoria . '</h2>';
         print '<div class="row row-cols-1 row-cols-md-3 g-4">';
 
         while ($producto = $resultado->fetch_assoc()) {
