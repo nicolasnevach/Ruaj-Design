@@ -496,11 +496,17 @@ input[type="submit"] {
 /* ============================================
    SECCIONES ESPECIALES
    ============================================ */
-.section-fondo{
-    background-image: url(../img/fondo.jpg);
+.section-fondo {
+    background-image: url(../img/fondo1.png);
     position: relative;
     width: 100%;
+    height: 100vh; /* o el alto que necesites */
+    background-size: cover; /* hace zoom para cubrir todo el espacio */
+    background-repeat: no-repeat;
+    background-position: center center; /* centra la imagen */
 }
+
+
 
 .sobre-nosotros {
   background-color: var(--color-nav);
@@ -642,11 +648,15 @@ body .columna.texto.section-fondo strong,
 footer {
     text-align: center;
     padding: 1rem;
-    background-color: var(--color-background) !important;
+    background-color: #a6a6a6 !important;
     border-top: 1px solid rgba(60, 57, 40, 0.1);
     flex-shrink: 0; /* Evita que el footer se encoja */
     margin-top: auto; /* Empuja el footer al fondo cuando hay espacio disponible */
     width: 100%;
+}
+
+.colores{
+    color: var(--color-accent);
 }
 
 /* ============================================

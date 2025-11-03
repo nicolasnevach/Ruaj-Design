@@ -12,5 +12,5 @@ if ($res && $res->num_rows > 0) {
   }
 } else {
   print "<span class='dropdown-item'>Sin categorías</span>";
-}
+} 
 ?>

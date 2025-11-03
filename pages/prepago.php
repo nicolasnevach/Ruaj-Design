@@ -84,7 +84,7 @@ if (isset($_GET['error'])) {
           
           <div>
             <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
-            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos contigo todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos con vos todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
           </div>
         </div>
       </div>

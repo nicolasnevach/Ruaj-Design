@@ -86,16 +86,20 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
     <div class="col-md-7">
       <div class="product-info">
         <div class="product-status mb-2">
-          <span class="badge bg-success">Nuevo</span>
-          <span class="text-muted ms-2">| +50 vendidos</span>
+          <span class="text-muted ms-2"> +25 vendidos</span>
         </div>
 
         <h1 class="text-start product-title"><?php echo htmlspecialchars($nombre); ?></h1>
 
         <!-- Precio -->
         <div class="price-container mb-4">
-          <h2 class="price">Precio: $<span id="precioActual"><?php echo number_format($primeraMedida['precio'], 2); ?></span></h2>
-        </div>
+  <h2 class="price">Precio: $<span id="precioActual"><?php echo number_format($primeraMedida['precio'], 2); ?></span></h2>
+  <h3>
+    <span id="precioDescuento">$<?php echo number_format($primeraMedida['precio']*0.75, 2); ?></span>
+    Beneficio especial!! Ahorrá un 25% pagando en efectivo!
+  </h3>
+</div>
+
 
         <!-- Medidas -->
         <?php if (!empty($medidas)) : ?>
@@ -144,21 +148,28 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
             <ul class="list-unstyled">
               <li class="mb-2"><p><strong>Descripción:</strong></p> <?php echo nl2br(htmlspecialchars($descripcion)); ?></li>
 
+
+        También realizamos modelos a medida; consultanos por WhatsApp para recibir asesoramiento personalizado. <br>
+
+Cada pieza es única: al ser de madera natural, pueden presentarse diferencias en el tono del tinte entre un producto y otro. <br><br>
+
+<strong>Nuestros productos se destacan por su calidad y terminaciones.</strong>
+
 <div class="alert alert-info mt-4 mb-4" role="alert">
         <div class="d-flex align-items-center">
           
           <div>
             <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
-            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos contigo todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos con vos todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
           </div>
         </div>
       </div>
 
-              <p><strong>Envíos a todo el país:</strong> <br><br>
+              <p><strong>Envíos a todo el país:</strong>
 
 Realizamos envíos a domicilio en todo el territorio nacional.
 El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra.
-<strong>El valor del flete corre por cuenta del cliente.</strong> <br><br>
+<strong>El valor del flete es a cargo del cliente.</strong> <br><br>
 
 <strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
 
@@ -251,18 +262,27 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
   selectCantidad.addEventListener('change', ()=>{inputCantidadCarrito.value = selectCantidad.value;});
   formCarrito.addEventListener('submit', ()=>{inputCantidadCarrito.value = selectCantidad.value;});
 
-  // Botones de medida
-  const precioCarrito = document.getElementById('precioCarrito');
-  const medidaCarrito = document.getElementById('medidaCarrito');
-  document.querySelectorAll('.btn-medida').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.btn-medida').forEach(b=>b.classList.remove('activo'));
-      btn.classList.add('activo');
-      precioCarrito.value = btn.dataset.precio;
-      medidaCarrito.value = btn.dataset.medida;
-      document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR', {minimumFractionDigits:2});
-    });
+// Botones de medida
+const precioCarrito = document.getElementById('precioCarrito');
+const medidaCarrito = document.getElementById('medidaCarrito');
+document.querySelectorAll('.btn-medida').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.btn-medida').forEach(b=>b.classList.remove('activo'));
+    btn.classList.add('activo');
+    precioCarrito.value = btn.dataset.precio;
+    medidaCarrito.value = btn.dataset.medida;
+    document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR', {minimumFractionDigits:2});
+
+    // 👇 NUEVO: actualizar el precio con descuento (25% off)
+    const precioDescuento = document.querySelector('#precioDescuento');
+    if (precioDescuento) {
+      const nuevoPrecio = parseFloat(btn.dataset.precio);
+      const precioConDescuento = nuevoPrecio * 0.75;
+      precioDescuento.textContent = `$${precioConDescuento.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+    }
   });
+});
+
 </script>
 
 <?php include_once("../components/footer.php"); ?>

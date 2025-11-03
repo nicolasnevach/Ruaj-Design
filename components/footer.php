@@ -3,7 +3,7 @@
     <!-- Sección Contacto -->
     <div class="footer-section">
       <h3>Contacto</h3>
-      <p><i class="fas fa-map-marker-alt"></i> Av. Elcano 4012, CABA</p>
+      <p><i class="fas fa-map-marker-alt"></i> CHACARITA, CABA</p>
       <p><i class="fas fa-phone"></i> +54 11 3813-1307</p>
       <p><i class="fas fa-envelope"></i> ruajdesign@gmail.com</p>
     </div>
@@ -11,9 +11,8 @@
     <!-- Sección Horarios -->
     <div class="footer-section">
       <h3>Horarios</h3>
-      <p>Lunes a Viernes: 9:00 - 18:00</p>
-      <p>Sábados: 10:00 - 14:00</p>
-      <p>Domingos: Cerrado</p>
+      <p>Lunes a Viernes: 10:00 - 18:00</p>
+      <p>Sabados y domingos: Cerrado</p>
     </div>
 
     <!-- Sección Redes Sociales -->
@@ -45,7 +44,7 @@
 <style>
 .footer {
   background-color: #2c3e50;
-  color: #03c5f5ff;
+  color: var(--color-accent);
   padding: 40px 20px 20px;
   margin-top: 50px;
 }
@@ -65,10 +64,10 @@
 }
 
 .footer-section h3 {
-  color: #3498db;
+  color: var(--color-accent);
   margin-bottom: 15px;
   font-size: 1.2rem;
-  border-bottom: 2px solid #3498db;
+  border-bottom: 2px solid var(--color-accent);
   padding-bottom: 8px;
 }
 
@@ -79,7 +78,7 @@
 
 .footer-section i {
   margin-right: 8px;
-  color: #3498db;
+  color: var(--color-accent);
 }
 
 .social-links {

@@ -29,7 +29,6 @@ include_once("../components/header.php");
   
       <!-- Bloque de texto -->
       <div class="col-lg-6 d-flex flex-column justify-content-start">
-        <h1 class="display-5 fw-bold lh-1 mb-4 ruaj">RUAJ DESIGN</h1>
         <p class="lead fw-bold fs-3 mb-3" id="dte">Diseñá tu estilo</p>
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
           <a class="btn btn-outline-success btn-lg" id="but" href="contacto.php">Arma tu diseño!</a>
@@ -123,7 +122,7 @@ if ($resultado && $resultado->num_rows > 0) {
 </div>
   <div class="columna texto section-fondo">
     <h2><strong>CONTACTO FÁBRICA</strong></h2>
-    <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 <strong>Dirección:</strong> Av. Elcano 4012 CHACARITA - CABA.</p>
+    <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 CHACARITA - CABA.</p>
     <a href="https://wa.me/541138131307" class="boton"><strong>Ir a Whatsapp</strong></a>
   </div>
 </section>
