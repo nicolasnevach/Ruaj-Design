@@ -8,10 +8,11 @@ include_once("../components/header.php");
   <p>Lo sentimos, tu pago no pudo ser procesado.</p>
 
   <?php if (isset($_GET['status'])): ?>
-    <p><strong>Estado:</strong> <?php echo htmlspecialchars($_GET['status']); ?></p>
+    <p><strong>Estado:</strong> <?php echo htmlspecialchars($_GET['status'], ENT_QUOTES, 'UTF-8'); ?></p>
   <?php endif; ?>
 
   <a href="carrito.php" class="btn btn-warning mt-3">Volver al carrito</a>
+  <a href="productos_generales.php" class="btn btn-outline-secondary mt-3">Seguir comprando</a>
 </div>
 
 <?php include_once("../components/footer.php"); ?>

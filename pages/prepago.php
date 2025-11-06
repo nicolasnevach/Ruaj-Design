@@ -12,14 +12,19 @@ if (empty($carrito)) {
 // Calcular totales
 $total = 0;
 foreach ($carrito as $id => $item) {
-    $subtotal = $item['precio'] * $item['cantidad'];
+    // Validar que existan las claves necesarias
+    if (!isset($item['precio'], $item['cantidad'])) {
+        continue;
+    }
+    
+    $subtotal = (float)$item['precio'] * (int)$item['cantidad'];
     $carrito[$id]['subtotal'] = $subtotal;
     $total += $subtotal;
 }
 
 // Manejo de errores
 if (isset($_GET['error'])) {
-    $error = $_GET['error'];
+    $error = htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8');
     $mensaje = '';
     
     switch($error) {
@@ -29,15 +34,20 @@ if (isset($_GET['error'])) {
         case 'email_invalido':
             $mensaje = 'El email ingresado no es válido.';
             break;
+        case 'datos_largos':
+            $mensaje = 'Algunos campos exceden la longitud permitida.';
+            break;
         case 'bd_error':
             $mensaje = 'Hubo un error al procesar su solicitud. Intente nuevamente.';
             break;
+        default:
+            $mensaje = 'Ocurrió un error. Por favor intente nuevamente.';
     }
     
     if ($mensaje) {
         echo '<div class="alert alert-danger alert-dismissible fade show container-prepago" role="alert">
-                ' . $mensaje . '
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                ' . htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') . '
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
               </div>';
     }
 }
@@ -59,35 +69,54 @@ if (isset($_GET['error'])) {
                     <div class="fila-datos-personales">
                         <div>
                             <label for="nom">Nombre y apellido:</label>
-                            <input type="text" name="nombre_apellido" id="nom" placeholder="Ingrese su nombre y apellido" required> 
+                            <input type="text" 
+                                   name="nombre_apellido" 
+                                   id="nom" 
+                                   placeholder="Ingrese su nombre y apellido"
+                                   maxlength="100"
+                                   required> 
                         </div>
                         <div>
                             <label for="mail">Mail:</label>
-                            <input type="email" name="email" id="mail" placeholder="Ingrese su email" required> 
+                            <input type="email" 
+                                   name="email" 
+                                   id="mail" 
+                                   placeholder="ejemplo@correo.com"
+                                   maxlength="100"
+                                   required> 
                         </div>
                     </div>
 
                     <!-- Teléfono -->
                     <div style="margin-bottom: 15px;">
                         <label for="tel">Teléfono:</label>
-                        <input type="tel" name="telefono" id="tel" placeholder="Ingrese su teléfono" required>
+                        <input type="tel" 
+                               name="telefono" 
+                               id="tel" 
+                               placeholder="Ej: +54 11 1234-5678"
+                               pattern="[0-9+\-\s()]*"
+                               maxlength="20"
+                               required>
                     </div>
 
                     <!-- Comentarios -->
                     <div class="area-comentarios">
-                        <label for="comentarios">Comentarios/observaciones:</label>
-                        <textarea id="comentarios" name="comentarios" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
+                        <label for="comentarios">Comentarios/observaciones (opcional):</label>
+                        <textarea id="comentarios" 
+                                  name="comentarios" 
+                                  rows="3" 
+                                  maxlength="500"
+                                  placeholder="Escribe tu mensaje aquí (máximo 500 caracteres)..."></textarea>
                     </div>
 
                     <div class="alert alert-info mt-4 mb-4" role="alert">
-        <div class="d-flex align-items-center">
-          
-          <div>
-            <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
-            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos con vos todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
-          </div>
-        </div>
-      </div>
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
+                                <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos con vos todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="submit-container">
                         <button type="submit" class="btn btn-success btn-lg" style="width: 100%;">
@@ -104,25 +133,32 @@ if (isset($_GET['error'])) {
             
             <div class="productos-lista">
                 <?php foreach ($carrito as $id => $item): ?>
+                    <?php
+                    // Validar que existan todas las claves necesarias
+                    if (!isset($item['foto'], $item['nombre'], $item['cantidad'], $item['precio'], $item['subtotal'])) {
+                        continue;
+                    }
+                    ?>
                     <div class="producto-resumen">
-                        <img src="../img/<?= htmlspecialchars($item['foto']) ?>" 
-                             alt="<?= htmlspecialchars($item['nombre']) ?>" 
-                             class="producto-img">
+                        <img src="../img/<?= htmlspecialchars($item['foto'], ENT_QUOTES, 'UTF-8') ?>" 
+                             alt="Imagen de <?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?>" 
+                             class="producto-img"
+                             width="80"
+                             height="80">
                         
                         <div class="producto-info">
                             <div class="producto-nombre">
-                                <?= htmlspecialchars($item['nombre']) ?>
+                                <?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?>
                             </div>
                             <div class="producto-detalle">
-                                Cantidad: <?= (int)$item['cantidad'] ?>
+                                Cantidad: <?= htmlspecialchars((int)$item['cantidad'], ENT_QUOTES, 'UTF-8') ?>
                             </div>
                             <div class="producto-detalle">
-                                Precio unitario: $<?= number_format($item['precio'], 2) ?>
+                                Precio unitario: $<?= htmlspecialchars(number_format($item['precio'], 2), ENT_QUOTES, 'UTF-8') ?>
                             </div>
                             <div class="producto-precio">
-                                Subtotal: $<?= number_format($item['subtotal'], 2) ?>
+                                Subtotal: $<?= htmlspecialchars(number_format($item['subtotal'], 2), ENT_QUOTES, 'UTF-8') ?>
                             </div>
-                            
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -131,7 +167,7 @@ if (isset($_GET['error'])) {
             <div class="total-container">
                 <div class="total-row">
                     <span>Total a pagar:</span>
-                    <span>$<?= number_format($total, 2) ?></span>
+                    <span>$<?= htmlspecialchars(number_format($total, 2), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
             </div>
         </div>

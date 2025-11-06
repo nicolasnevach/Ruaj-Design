@@ -6,11 +6,14 @@ $res = $conf->query($sql);
 
 if ($res && $res->num_rows > 0) {
   while ($row = $res->fetch_assoc()) {
-    $nombre = $row['nombre_cat'];
-    $id = (int)$row['id_categoria']; // Aseguramos que sea un entero
-    print "<a href='productos.php?categoria=$id' class='dropdown-item'>$nombre</a>";
+    if (!isset($row['nombre_cat'], $row['id_categoria'])) {
+        continue;
+    }
+    $nombre = htmlspecialchars($row['nombre_cat'], ENT_QUOTES, 'UTF-8');
+    $id = (int)$row['id_categoria'];
+    echo "<a href='productos.php?categoria=" . $id . "' class='dropdown-item'>" . $nombre . "</a>";
   }
 } else {
-  print "<span class='dropdown-item'>Sin categorías</span>";
-} 
+  echo "<span class='dropdown-item'>Sin categorías</span>";
+}
 ?>

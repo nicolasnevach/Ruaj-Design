@@ -41,7 +41,9 @@ $stmt_medidas->execute();
 $result_medidas = $stmt_medidas->get_result();
 $medidas = [];
 while ($row = $result_medidas->fetch_assoc()) {
-    $medidas[] = $row;
+    if (isset($row['medida'], $row['precio'])) {
+        $medidas[] = $row;
+    }
 }
 $stmt_medidas->close();
 
@@ -61,7 +63,8 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
   </nav>
 
   <div class="row">
-    <div class="col-md-5">
+    <!-- 🔹 CAMBIO: col-md-5 para mejor responsive -->
+    <div class="col-12 col-md-5 mb-4">
       <div class="product-image-main mb-3">
         <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" 
              class="img-fluid rounded" 
@@ -71,19 +74,20 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
       </div>
 
       <div class="row thumbnails gx-2">
-        <div class="col-3">
-          <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" class="img-fluid rounded thumb-img" alt="Foto frente" onclick="cambiarImagen(this)">
+        <div class="col-4">
+          <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" class="img-fluid rounded thumb-img" alt="Vista frontal de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
         </div>
-        <div class="col-3">
-          <img src="../img/<?php echo htmlspecialchars($foto_costado); ?>" class="img-fluid rounded thumb-img" alt="Foto costado" onclick="cambiarImagen(this)">
+        <div class="col-4">
+          <img src="../img/<?php echo htmlspecialchars($foto_costado); ?>" class="img-fluid rounded thumb-img" alt="Vista lateral de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
         </div>
-        <div class="col-3">
-          <img src="../img/<?php echo htmlspecialchars($foto_zoom); ?>" class="img-fluid rounded thumb-img" alt="Foto zoom" onclick="cambiarImagen(this)">
+        <div class="col-4">
+          <img src="../img/<?php echo htmlspecialchars($foto_zoom); ?>" class="img-fluid rounded thumb-img" alt="Detalle de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
         </div>
       </div>
     </div>
 
-    <div class="col-md-7">
+    <!-- 🔹 CAMBIO: col-md-7 para mejor responsive -->
+    <div class="col-12 col-md-7">
       <div class="product-info">
         <div class="product-status mb-2">
           <span class="text-muted ms-2"> +25 vendidos</span>
@@ -93,9 +97,9 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
         <!-- Precio -->
         <div class="price-container mb-4">
-  <h2 class="price">Precio: $<span id="precioActual"><?php echo number_format($primeraMedida['precio'], 2); ?></span></h2>
+  <h2 class="price">Precio: $<span id="precioActual"><?php echo htmlspecialchars(number_format($primeraMedida['precio'], 2), ENT_QUOTES, 'UTF-8'); ?></span></h2>
   <h3>
-    <span id="precioDescuento">$<?php echo number_format($primeraMedida['precio']*0.75, 2); ?></span>
+    <span id="precioDescuento">$<?php echo htmlspecialchars(number_format($primeraMedida['precio']*0.75, 2), ENT_QUOTES, 'UTF-8'); ?></span>
     Beneficio especial!! Ahorrá un 25% pagando en efectivo!
   </h3>
 </div>
@@ -103,28 +107,29 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
         <!-- Medidas -->
         <?php if (!empty($medidas)) : ?>
-          <div class="mb-3">
-            <label class="fw-bold mb-2 d-block">Seleccioná una medida:</label>
-            <div id="opcionesMedidas">
-              <?php foreach ($medidas as $m) : ?>
-                <button type="button"
-                        class="btn btn-medida me-2 mb-2 <?php echo ($m === $primeraMedida) ? 'activo' : ''; ?>"
-                        data-precio="<?php echo $m['precio']; ?>"
-                        data-medida="<?php echo htmlspecialchars($m['medida']); ?>">
-                  <?php echo htmlspecialchars($m['medida']); ?>
-                </button>
-              <?php endforeach; ?>
-            </div>
-          </div>
-        <?php endif; ?>
+  <div class="mb-3">
+    <label class="fw-bold mb-2 d-block">Seleccioná una medida:</label>
+    <div id="opcionesMedidas">
+      <?php foreach ($medidas as $m) : ?>
+        <button type="button"
+                class="btn btn-medida me-2 mb-2 prod <?php echo ($m === $primeraMedida) ? 'activo' : ''; ?>"
+                data-precio="<?php echo htmlspecialchars($m['precio'], ENT_QUOTES, 'UTF-8'); ?>"
+                data-medida="<?php echo htmlspecialchars($m['medida'], ENT_QUOTES, 'UTF-8'); ?>">
+          <?php echo htmlspecialchars($m['medida'], ENT_QUOTES, 'UTF-8'); ?>
+        </button>
+      <?php endforeach; ?>
+    </div>
+  </div>
+<?php endif; ?>
+
 
         <!-- Formulario carrito -->
         <div class="producto-compra mb-4">
           <form id="formCarrito" method="POST" action="agregar_carrito.php" class="mt-3">
             <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
             <input type="hidden" id="cantidadCarrito" name="cantidad" value="1">
-            <input type="hidden" id="medidaCarrito" name="medida" value="<?php echo htmlspecialchars($primeraMedida['medida']); ?>">
-            <input type="hidden" id="precioCarrito" name="precio" value="<?php echo $primeraMedida['precio']; ?>">
+            <input type="hidden" id="medidaCarrito" name="medida" value="<?php echo htmlspecialchars($primeraMedida['medida'], ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" id="precioCarrito" name="precio" value="<?php echo htmlspecialchars($primeraMedida['precio'], ENT_QUOTES, 'UTF-8'); ?>">
 
             <label for="quantity" class="me-2">Cantidad:</label>
             <select class="form-select w-auto d-inline-block" id="quantity" name="cantidad">
@@ -133,7 +138,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
               <?php endfor; ?>
             </select>
 
-            <button type="submit" class="btn btn-outline-success btn-agregar w-100 mt-2">
+            <button type="submit" class="btn btn-outline-success btn-agregar w-100 mt-2 prod">
               Agregar al carrito
             </button>
           </form>
@@ -188,7 +193,8 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
     </div>
   </div>
 
-  <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+  <!-- 🔹 CAMBIO PRINCIPAL: row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
     <?php
     $stmt_rel = $conf->prepare("SELECT * FROM Producto WHERE id_categoria = ? AND id_producto != ? AND activo = 1 LIMIT 4");
     $stmt_rel->bind_param("ii", $id_categoria, $id_producto);
@@ -197,6 +203,9 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
 
     if ($rel_result && $rel_result->num_rows > 0) {
         while ($rel = $rel_result->fetch_assoc()) {
+            if (!isset($rel['nombre_prod'], $rel['foto_frente'], $rel['precio'], $rel['id_producto'])) {
+                continue;
+            }
             $rel_nombre = $rel['nombre_prod'];
             $rel_foto = $rel['foto_frente'];
             $rel_precio = $rel['precio'];
@@ -207,7 +216,7 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
             <img src="../img/<?php echo htmlspecialchars($rel_foto); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($rel_nombre); ?>">
             <div class="card-body">
               <h5 class="card-title"><?php echo htmlspecialchars($rel_nombre); ?></h5>
-              <p class="card-text">$<?php echo number_format($rel_precio, 2); ?></p>
+              <p class="card-text">$<?php echo htmlspecialchars(number_format($rel_precio, 2), ENT_QUOTES, 'UTF-8'); ?></p>
               <a class="btn btn-success" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
             </div>
           </div>
@@ -219,6 +228,7 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
     }
 
     $stmt_rel->close();
+    $conf->close();
     ?>
   </div>
 </div>
@@ -273,7 +283,6 @@ document.querySelectorAll('.btn-medida').forEach(btn=>{
     medidaCarrito.value = btn.dataset.medida;
     document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR', {minimumFractionDigits:2});
 
-    // 👇 NUEVO: actualizar el precio con descuento (25% off)
     const precioDescuento = document.querySelector('#precioDescuento');
     if (precioDescuento) {
       const nuevoPrecio = parseFloat(btn.dataset.precio);

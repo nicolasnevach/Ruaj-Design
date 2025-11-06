@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_GET['id'])) {
-    $clave = $_GET['id']; // ahora es un string tipo "123_md5medida"
+    $clave = htmlspecialchars($_GET['id'], ENT_QUOTES, 'UTF-8');
 
     if (isset($_SESSION['carrito'][$clave])) {
         unset($_SESSION['carrito'][$clave]);

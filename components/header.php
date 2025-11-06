@@ -8,10 +8,13 @@ if (session_status() === PHP_SESSION_NONE) {
 $contador_carrito = 0;
 $total_carrito = 0.00;
 
-if (isset($_SESSION['carrito'])) {
+if (isset($_SESSION['carrito']) && is_array($_SESSION['carrito'])) {
     foreach ($_SESSION['carrito'] as $item) {
-        $contador_carrito += $item['cantidad'];
-        $total_carrito += $item['precio'] * $item['cantidad'];
+        // Validar que existan las claves necesarias
+        if (isset($item['cantidad'], $item['precio'])) {
+            $contador_carrito += (int)$item['cantidad'];
+            $total_carrito += (float)$item['precio'] * (int)$item['cantidad'];
+        }
     }
 }
 ?>
@@ -20,7 +23,8 @@ if (isset($_SESSION['carrito'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruaj</title>
+  <meta name="description" content="Ruaj Design - Diseño y fabricación de muebles personalizados">
+  <title>Ruaj Design</title>
 
   <link rel="icon" href="../img/favicon.png" type="image/png">
 
@@ -39,13 +43,13 @@ if (isset($_SESSION['carrito'])) {
     <div class="container-fluid">
       <div class="d-lg-none position-absolute start-50 translate-middle-x" style="top: 15px;">
         <a href="inicio.php">
-            <img src="../img/favicon.png" alt="Sheva" width="70" height="70">
+            <img src="../img/favicon.png" alt="Logo de Ruaj Design" width="70" height="70">
         </a>
       </div>
     
       <div class="d-none d-lg-block">
         <a href="inicio.php" class="me-4">
-            <img src="../img/favicon.png" alt="Sheva" width="70" height="70">
+            <img src="../img/favicon.png" alt="Logo de Ruaj Design" width="70" height="70">
         </a>
       </div>
 
@@ -53,7 +57,7 @@ if (isset($_SESSION['carrito'])) {
         
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasNavbar"
-              aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+              aria-controls="offcanvasNavbar" aria-label="Abrir menú de navegación">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -61,11 +65,11 @@ if (isset($_SESSION['carrito'])) {
            aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
           <a class="navbar-brand" href="inicio.php">
-            <img src="../img/favicon.png" alt="Sheva" width="70" height="70">
+            <img src="../img/favicon.png" alt="Logo de Ruaj Design" width="70" height="70">
           </a>
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Sheva</h5>
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Ruaj Design</h5>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-                  aria-label="Close"></button>
+                  aria-label="Cerrar menú"></button>
         </div>
         <div class="offcanvas-body" id="ofc">
           <ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
@@ -93,29 +97,26 @@ if (isset($_SESSION['carrito'])) {
 
     <div class="navbar-social d-flex align-items-center">
       
+      <!-- 🛒 Carrito con contador y total -->
+      <a href="../pages/carrito.php" class="carrito-link d-flex align-items-center text-decoration-none" aria-label="Ver carrito de compras">
 
- <!-- 🛒 Carrito con contador al lado y total al lado del icono -->
-<a href="../pages/carrito.php" class="carrito-link d-flex align-items-center text-decoration-none">
+        <!-- Contenedor del icono y contador -->
+        <div class="carrito-icono position-relative d-flex align-items-center">
+          <img src="../img/carrito.png" alt="Icono del carrito de compras" width="32" height="32">
+          <?php if ($contador_carrito > 0): ?>
+            <span class="carrito-contador badge rounded-pill" aria-label="<?= htmlspecialchars($contador_carrito, ENT_QUOTES, 'UTF-8') ?> productos en el carrito">
+              <?= htmlspecialchars($contador_carrito, ENT_QUOTES, 'UTF-8') ?>
+            </span>
+          <?php endif; ?>
+        </div>
 
-  <!-- Contenedor del icono y contador -->
-  <div class="carrito-icono position-relative d-flex align-items-center">
-    <img src="../img/carrito.png" alt="Carrito" width="32">
-    <?php if ($contador_carrito > 0): ?>
-      <span class="carrito-contador badge rounded-pill">
-        <?= $contador_carrito ?>
-      </span>
-    <?php endif; ?>
-  </div>
+        <!-- Contenedor del texto Total carrito -->
+        <div class="carrito-info ms-2 d-flex flex-column">
+          <span class="carrito-label">Total carrito</span>
+          <span class="carrito-total">$<?= htmlspecialchars(number_format($total_carrito, 2), ENT_QUOTES, 'UTF-8') ?></span>
+        </div>
 
-  <!-- Contenedor del texto Total carrito al lado del icono -->
-  <div class="carrito-info ms-2 d-flex flex-column">
-    <span class="carrito-label">Total carrito</span>
-    <span class="carrito-total">$<?= number_format($total_carrito, 2) ?></span>
-  </div>
-
-</a>
-
-
+      </a>
 
     </div>
   </nav>
