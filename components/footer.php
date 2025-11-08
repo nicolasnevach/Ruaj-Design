@@ -1,8 +1,8 @@
 <footer class="footer">
   <div class="footer-container">
     <!-- Sección Contacto -->
-    <div class="footer-section">
-      <h3>Contacto</h3>
+    <div class="footer-section footer-bottom">
+      <h3><a href="inicio.php#contacto" >Contacto</a></h3>
       <p><i class="fas fa-map-marker-alt"></i> CHACARITA, CABA</p>
       <p><i class="fas fa-phone"></i> +54 11 3813-1307</p>
       <p><i class="fas fa-envelope"></i> ruajdesign@gmail.com</p>
@@ -14,6 +14,10 @@
       <p>Lunes a Viernes: 10:00 - 18:00</p>
       <p>Sábados y Domingos: Cerrado</p>
     </div>
+
+    
+    
+    
 
     <!-- Sección Redes Sociales -->
     <div class="footer-section">
@@ -49,6 +53,35 @@
         </a>
       </div>
     </div>
+
+    <div class="footer-section">
+  <h3>Medios de pago</h3>
+  <div class="social-links">
+    <div class="social-icon" aria-label="Pago con Mercado Pago">
+      <img src="../img/mp.png" alt="Mercado Pago" width="40" height="40">
+    </div>
+    <div class="social-icon" aria-label="Pago con Visa">
+      <img src="../img/visa.png" alt="Visa" width="40" height="40">
+    </div>
+    <div class="social-icon" aria-label="Pago con Mastercard">
+      <img src="../img/master.png" alt="Mastercard" width="40" height="40">
+    </div>
+    <div class="social-icon" aria-label="Pago con American Express">
+      <img src="../img/amex.png" alt="American Express" width="40" height="40">
+    </div>
+    <div class="social-icon" aria-label="Pago con Diners Club">
+      <img src="../img/diners.png" alt="Diners Club" width="40" height="40">
+    </div>
+    <div class="social-icon" aria-label="Pago con CABAL">
+      <img src="../img/cabal.png" alt="CABAL" width="40" height="40">
+    </div>
+    <div class="social-icon" aria-label="Pago con Banelco">
+      <img src="../img/banelco.png" alt="Banelco" width="40" height="40">
+    </div>
+  
+  </div>
+</div>
+
   </div>
 
   <!-- Copyright -->

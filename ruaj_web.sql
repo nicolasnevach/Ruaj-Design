@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-10-2025 a las 00:05:44
+-- Tiempo de generación: 08-11-2025 a las 23:06:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,7 +46,8 @@ INSERT INTO `categorias` (`id_categoria`, `nombre_cat`) VALUES
 (7, 'Percheros'),
 (8, 'Racks'),
 (9, 'Recibidores'),
-(10, 'Roperos');
+(10, 'Roperos'),
+(11, 'Mesas de Comedor');
 
 -- --------------------------------------------------------
 
@@ -61,15 +62,18 @@ CREATE TABLE `compras` (
   `telefono` int(11) NOT NULL,
   `comentarios` text NOT NULL,
   `subtotal` int(11) NOT NULL,
-  `total` int(11) NOT NULL
+  `total` int(11) NOT NULL,
+  `metodo_envio` varchar(50) NOT NULL,
+  `direccion_envio` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `compras`
 --
 
-INSERT INTO `compras` (`id_compra`, `nombre_completo`, `mail`, `telefono`, `comentarios`, `subtotal`, `total`) VALUES
-(1, 'nicolas', 'niconevach@gmail.com', 0, '0', 70000, 70000);
+INSERT INTO `compras` (`id_compra`, `nombre_completo`, `mail`, `telefono`, `comentarios`, `subtotal`, `total`, `metodo_envio`, `direccion_envio`) VALUES
+(9, 'prueba', 'niconevach@gmail.com', 2147483647, 'dawdawdwadwa', 1, 1, 'domicilio', 'Av Corrientes 5506'),
+(10, 'prueba', 'niconevach@gmail.com', 2147483647, 'adwdwadaw', 1, 1, 'retiro', '');
 
 -- --------------------------------------------------------
 
@@ -115,7 +119,7 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id_producto`, `nombre_prod`, `precio`, `descripcion`, `foto_frente`, `foto_costado`, `foto_zoom`, `id_categoria`, `activo`) VALUES
-(1, 'Banco Bariloche', 150000, 'Descripción\r\nMadera: Alamo macizo teñido en simil petiribi.\r\n\r\nMedidas: 45cm ancho x 35 cm prof x 65 cm altura.\r\n\r\nTodos los cajones vienen con guías telescópicas metalicas.\r\n\r\nTerminaciones en laca.\r\n\r\nAl tratarse de madera, los nudos/vetas/tinte pueden variar de un modelo con otro.\r\n\r\nCondiciones de envío:\r\n\r\nTodos nuestros productos los podés pasar a retirar por el Showroom de Beccar o podemos coordinar un flete con envío a domicilio.\r\n\r\nEn todos los casos, ya sea para CABA / GBA o el interioir del país, el envío corre por cuenta del cliente. La empresa de transporte/ flete queda a elección del cliente.\r\n\r\nArista deco no se hace cargo por los daños que pudieran surgir en el translado de los mismos.\r\n\r\nCualquier otra consulta escribinos a nuestro whatsapp +5491139076431', '../img/bari_frente.png', '../img/bari_costado.png', '../img/bari_zoom.png', 1, 0),
+(1, 'Banco Bariloche', 150000, '', '../img/bari_frente.png', '../img/bari_costado.png', '../img/bari_zoom.png', 1, 0),
 (2, 'Biblioteca Petra', 0, 'Biblioteca Petra', '../img/petra_frente.png', '../img/petra_costado.png', '../img/petra_zoom.png', 2, 0),
 (3, 'Comoda Venecia 4 Cajones', 0, 'Cómoda de álamo teñido con cajones (correderas telescópicas).\r\nDisponible en tres medidas estándar: 1.20 m, 1.40 m y 1.60 m de ancho, con 40 cm de profundidad y 80 cm de alto.\r\nTambién realizamos modelos a medida; consultanos por WhatsApp para recibir asesoramiento personalizado.\r\n\r\nCada pieza es única: al ser de madera natural, pueden presentarse diferencias en las vetas, los nudos o el tono del tinte entre un producto y otro.', '../img/comoda_4_frente.png', '../img/comoda_4_costado.png', '../img/comoda_4_zoom.png', 3, 1),
 (4, 'Comoda Venecia 6 Cajones', 0, 'Cómoda de álamo macizo teñido con cajones (correderas telescópicas).\r\nDisponible en tres medidas estándar: 1.20 m, 1.40 m y 1.60 m de ancho, con 40 cm de profundidad y 80 cm de alto.\r\nSi necesitás una medida especial, podés encargarnos una cómoda personalizada a través de WhatsApp.\r\n\r\nAl ser un producto elaborado en madera natural, cada pieza presenta sus propias vetas, nudos y variaciones de color, lo que la hace única.', '../img/comoda_6_frente.png', '../img/comoda_6_costado.png', '../img/comoda_6_zoom.png', 3, 1),
@@ -132,7 +136,7 @@ INSERT INTO `producto` (`id_producto`, `nombre_prod`, `precio`, `descripcion`, `
 (15, 'Mesa Ratona Génova', 0, 'Génova', '../img/genova_frente.png', '../img/genova_costado.png', '../img/genova_zoom.png', 6, 0),
 (16, 'Mesa Ratona Oporto', 0, 'Ratona Oporto', '../img/oporto_frente.png', '../img/oporto_costado.png', '../img/oporto_zoom.png', 6, 1),
 (17, 'Mesa Ratona Nápoles', 0, 'Mesa de comedor de petiribí macizo con tapa de porcelanato.\r\n\r\nMedida única: 1,24 m de ancho x 0,64 m de profundidad x 0,50 m de alto.\r\nNota: la altura es la única dimensión que se puede modificar bajo pedido.\r\n\r\nCada mesa es única: al ser fabricada en madera natural, pueden presentarse variaciones en las vetas, los nudos o el color del tinte.', '../img/napoles_frente.png', '../img/napoles_costado.png', '../img/napoles_zoom.png', 6, 1),
-(18, 'Mesa Ratona Zanzibar', 0, 'Zanzibar', '../img/zanzibar_frente.png', '../img/zanzibar_costado.png', '../img/zanzibar_zoom.png', 6, 1),
+(18, 'Mesa Ratona Zanzibar', 0, 'Zanzibar', '../img/zanzibar_frente.png', '../img/zanzibar_costado.png', '../img/zanzibar_zoom.png', 11, 1),
 (19, 'Perchero Turín', 0, 'Turín', '../img/turin_frente.png', '../img/turin_costado.png', '../img/turin_zoom.png', 7, 0),
 (20, 'Rack Palermo', 0, 'Mesa de álamo macizo con cajones y guías telescópicas.\r\n\r\nMedidas disponibles: 1,60 m, 1,80 m o 2,00 m de largo.\r\n\r\nCada pieza es única: al tratarse de madera natural, pueden presentarse variaciones en las vetas, los nudos o el color del tinte.', '../img/palermo_frente.png', '../img/palermo_costado.png', '../img/palermo_zoom.png', 8, 1),
 (21, 'Rack Bolonia', 0, 'Bolonia', '../img/bolonia_frente.png', '../img/bolonia_costado.png', '../img/bolonia_zoom.png', 8, 0),
@@ -163,9 +167,25 @@ CREATE TABLE `producto_medidas` (
 --
 
 INSERT INTO `producto_medidas` (`id_medida`, `id_producto`, `medida`, `precio`) VALUES
-(1, 3, '100x120', 150000),
-(2, 3, '110x150', 175000),
-(3, 3, '130x180', 195000);
+(1, 3, '1.20, 4 cajones', 1),
+(2, 3, '1.40, 4 cajones', 543629),
+(3, 3, '1.60, 4 cajones', 598309),
+(4, 4, '1.20, 6 cajones', 508729),
+(5, 4, '1.40, 6 cajones', 606178),
+(6, 4, '1.60, 6 cajones', 687300),
+(7, 20, '1.60', 767625),
+(8, 20, '1.80', 918160),
+(9, 20, '2.00', 1016618),
+(10, 25, '1.40', 570100),
+(11, 25, '1.60', 631195),
+(12, 25, '1.80', 754880),
+(13, 10, '0.50', 216385),
+(14, 13, '0.50', 216385),
+(15, 9, '0.70', 291115),
+(16, 17, '1.24', 1),
+(18, 8, '0.50', 201505),
+(19, 12, '0.50', 207505),
+(27, 27, '1.00', 375238);
 
 --
 -- Índices para tablas volcadas
@@ -211,13 +231,13 @@ ALTER TABLE `producto_medidas`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `id_compra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_compra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
@@ -235,7 +255,7 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `producto_medidas`
 --
 ALTER TABLE `producto_medidas`
-  MODIFY `id_medida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_medida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 
 --
 -- Restricciones para tablas volcadas

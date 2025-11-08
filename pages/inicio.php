@@ -58,7 +58,7 @@ include_once("../components/header.php");
 <?php
 include_once("../conf/conf.php");
 
-$productos_destacados = ['Mesa de Luz Dubai', 'Rack Palermo', 'Recibidor Londres'];
+$productos_destacados = ['Mesa de Luz Dubai', 'Comoda Venecia 4 Cajones', 'Recibidor Londres'];
 
 // Usar prepared statement con placeholders
 $placeholders = implode(',', array_fill(0, count($productos_destacados), '?'));
@@ -77,7 +77,7 @@ if ($resultado && $resultado->num_rows > 0) {
         continue;
     }
     $nombre = htmlspecialchars($producto['nombre_prod'], ENT_QUOTES, 'UTF-8');
-    $precio = htmlspecialchars(number_format($producto['precio'], 2), ENT_QUOTES, 'UTF-8');
+    $precio = htmlspecialchars(number_format($producto['precio']), ENT_QUOTES, 'UTF-8');
     $foto_frente = htmlspecialchars($producto['foto_frente'], ENT_QUOTES, 'UTF-8');
     $id = (int)$producto['id_producto'];
     $foto_costado = htmlspecialchars($producto['foto_costado'], ENT_QUOTES, 'UTF-8');
@@ -128,7 +128,8 @@ $conf->close();
   </div>
 </section>
 
-<section id="contacto" class="doble-columna">
+
+<section class="doble-columna">
   <div class="columna section-fondo">
     <div class="map-container">
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" 
@@ -138,14 +139,17 @@ $conf->close();
                 referrerpolicy="no-referrer-when-downgrade"
                 title="Ubicación de Ruaj Design en Chacarita, CABA"></iframe>
     </div>
-</div>
-  <div class="columna texto section-fondo">
+  </div>
+  <div class="columna section-fondo">
     <h2><strong>CONTACTO FÁBRICA</strong></h2>
     <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 CHACARITA - CABA.</p>
     <a href="https://wa.me/541138131307" target="_blank" rel="noopener noreferrer" class="boton"><strong>Ir a Whatsapp</strong></a>
   </div>
 </section>
 
+
 <?php
+echo "<!-- DEBUG: llegué al footer -->";
+
 include_once("../components/footer.php");
 ?>

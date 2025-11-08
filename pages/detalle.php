@@ -3,6 +3,10 @@ session_start();
 include_once("../components/header.php");
 include_once("../conf/conf.php");
 
+if (isset($_GET['ok']) && $_GET['ok'] == '1') {
+    echo '<div class="mensaje-carrito">Producto agregado al carrito correctamente!</div>';
+}
+
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "<p class='text-center mt-5'>Producto no especificado.</p>";
     include_once("../components/footer.php");
@@ -97,9 +101,9 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
         <!-- Precio -->
         <div class="price-container mb-4">
-  <h2 class="price">Precio: $<span id="precioActual"><?php echo htmlspecialchars(number_format($primeraMedida['precio'], 2), ENT_QUOTES, 'UTF-8'); ?></span></h2>
+  <h2 class="price">Precio: $<span id="precioActual"><?php echo htmlspecialchars(number_format($primeraMedida['precio']), ENT_QUOTES, 'UTF-8'); ?></span></h2>
   <h3>
-    <span id="precioDescuento">$<?php echo htmlspecialchars(number_format($primeraMedida['precio']*0.75, 2), ENT_QUOTES, 'UTF-8'); ?></span>
+    <span id="precioDescuento">$<?php echo htmlspecialchars(number_format($primeraMedida['precio']*0.75), ENT_QUOTES, 'UTF-8'); ?></span>
     Beneficio especial!! Ahorrá un 25% pagando en efectivo!
   </h3>
 </div>
@@ -165,16 +169,19 @@ Cada pieza es única: al ser de madera natural, pueden presentarse diferencias e
           
           <div>
             <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
-            <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos con vos todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+            <p class="mb-0">Protegemos tu privacidad y tu datos en cada paso, para que tu experiencia de compra sea segura y confiable.</p>
           </div>
         </div>
       </div>
 
-              <p><strong>Envíos a todo el país:</strong>
+              <p><strong>Retiros:</strong> Podés retirar tus productos por nuestra fábrica en CABA. <br>
+                
+              <strong>Envíos a todo el país:</strong>
 
 Realizamos envíos a domicilio en todo el territorio nacional.
 El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra.
-<strong>El valor del flete es a cargo del cliente.</strong> <br><br>
+<strong>El valor del flete es a cargo del cliente, no</strong> aplica al descuento en efectivo. <br><br>
+Te damos como beneficio el enbalaje <strong>bonificado</strong> para que tu producto viaje mas seguro.
 
 <strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
 
@@ -216,8 +223,8 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
             <img src="../img/<?php echo htmlspecialchars($rel_foto); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($rel_nombre); ?>">
             <div class="card-body">
               <h5 class="card-title"><?php echo htmlspecialchars($rel_nombre); ?></h5>
-              <p class="card-text">$<?php echo htmlspecialchars(number_format($rel_precio, 2), ENT_QUOTES, 'UTF-8'); ?></p>
-              <a class="btn btn-success" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
+              <p class="card-text">$<?php echo htmlspecialchars(number_format($rel_precio), ENT_QUOTES, 'UTF-8'); ?></p>
+              <a class="btn btn-outline-success prod" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
             </div>
           </div>
         </div>
@@ -281,13 +288,13 @@ document.querySelectorAll('.btn-medida').forEach(btn=>{
     btn.classList.add('activo');
     precioCarrito.value = btn.dataset.precio;
     medidaCarrito.value = btn.dataset.medida;
-    document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR', {minimumFractionDigits:2});
+    document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR');
 
     const precioDescuento = document.querySelector('#precioDescuento');
     if (precioDescuento) {
       const nuevoPrecio = parseFloat(btn.dataset.precio);
       const precioConDescuento = nuevoPrecio * 0.75;
-      precioDescuento.textContent = `$${precioConDescuento.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+      precioDescuento.textContent = `$${precioConDescuento.toLocaleString('es-AR')}`;
     }
   });
 });

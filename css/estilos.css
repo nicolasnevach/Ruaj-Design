@@ -491,15 +491,13 @@ input[type="submit"] {
     justify-content: center;
 }
 
-.sobre-nosotros .contenido {
-    max-width: 600px;
-    margin: 0 auto;
-}
+
 
 .doble-columna {
     display: flex;
     flex-wrap: wrap;
     min-height: 600px;
+    flex: 1 0 auto;
 }
 
 .columna {
@@ -574,6 +572,8 @@ footer,
     color: var(--color-background);
 }
 
+
+
 .footer-container {
     display: flex;
     justify-content: space-around;
@@ -629,6 +629,10 @@ footer,
   text-decoration: underline;
 }
 
+
+
+
+
 /* ============================================
    10. CARRITO Y COMPRA
    ============================================ */
@@ -664,28 +668,84 @@ footer,
     padding: 0 15px;
 }
 
+.mensaje-carrito {
+    position: fixed;
+    top: 80px;  /* Ajusta esta propiedad para mover el mensaje más abajo */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-weight: bold;
+    z-index: 1000;
+    width: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    animation: fadeOut 3s forwards;
+}
+
+
+/* Animación para que desaparezca después de un tiempo */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
+/* NUEVO: layout del formulario + resumen */
 .prepago-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    align-items: start;
+    display: flex;
+    flex-direction: column; /* En mobile y tablet: apilado */
+    gap: 20px;
+}
+
+/* Desktop: formulario a la izquierda, resumen a la derecha */
+@media (min-width: 992px) {
+    .prepago-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* 2/3 formulario - 1/3 resumen */
+        gap: 30px;
+        align-items: start;
+    }
+
+    #card_con {
+        order: 1; /* Formulario primero */
+    }
+
+    .resumen-carrito {
+        order: 2; /* Resumen a la derecha */
+    }
+}
+
+/* Ajuste opcional para pantallas muy grandes (más de 1400px) */
+@media (min-width: 1400px) {
+    .prepago-grid {
+        grid-template-columns: 1.7fr 1fr; /* Un poco más de espacio para el form */
+        gap: 40px;
+    }
 }
 
 .resumen-carrito {
     background: white;
     border-radius: 8px;
-    padding: 25px;
+    padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    position: sticky;
-    top: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .resumen-carrito h3 {
     color: var(--color-accent);
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 2px solid #f0f0f0;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+}
+
+.productos-lista {
+    margin-bottom: 15px;
 }
 
 .producto-resumen {
@@ -693,6 +753,8 @@ footer,
     gap: 15px;
     padding: 15px 0;
     border-bottom: 1px solid #f0f0f0;
+    align-items: flex-start;
+    max-width: 100%;
 }
 
 .producto-resumen:last-child {
@@ -709,6 +771,8 @@ footer,
 
 .producto-info {
     flex: 1;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .producto-nombre {
@@ -716,23 +780,32 @@ footer,
     color: var(--color-accent);
     margin-bottom: 5px;
     font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
 }
 
 .producto-detalle {
     font-size: 0.85rem;
     color: #666;
     margin-bottom: 3px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .producto-precio {
     font-weight: 600;
     color: var(--color-text);
     font-size: 0.95rem;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .total-container {
-    margin-top: 20px;
-    padding-top: 20px;
+    margin-top: 15px;
+    padding-top: 15px;
     border-top: 2px solid var(--color-accent);
 }
 
@@ -740,7 +813,7 @@ footer,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-accent);
 }
@@ -758,6 +831,131 @@ footer,
 
 .producto-compra .form-select {
     min-width: 80px;
+}
+
+/* ============================================
+   RESPONSIVE PREPAGO
+   ============================================ */
+
+/* Desktop: sticky y tamaños normales */
+@media (min-width: 992px) {
+    .resumen-carrito {
+        position: sticky;
+        top: 20px;
+        padding: 25px;
+        max-width: 100%;
+    }
+    
+    .resumen-carrito h3 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    
+    .total-row {
+        font-size: 1.3rem;
+    }
+    
+    .total-container {
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+    .resumen-carrito {
+        position: static;
+        padding: 20px;
+    }
+    
+    .producto-img {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .resumen-carrito {
+        position: static;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .resumen-carrito h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+    
+    .producto-resumen {
+        gap: 10px;
+        padding: 10px 0;
+    }
+    
+    .producto-img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .producto-nombre {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+    
+    .producto-detalle {
+        font-size: 0.75rem;
+        margin-bottom: 2px;
+    }
+    
+    .producto-precio {
+        font-size: 0.85rem;
+    }
+    
+    .total-container {
+        margin-top: 12px;
+        padding-top: 12px;
+    }
+    
+    .total-row {
+        font-size: 1rem;
+    }
+    
+    .container-prepago {
+        padding: 0 10px;
+    }
+
+    /* ✅ NUEVO: mail debajo de nombre y apellido en mobile */
+    .fila-datos-personales {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* Mobile muy pequeño */
+@media (max-width: 480px) {
+    .resumen-carrito {
+        padding: 12px;
+    }
+    
+    .producto-img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .producto-nombre {
+        font-size: 0.8rem;
+    }
+    
+    .producto-detalle {
+        font-size: 0.7rem;
+    }
+    
+    .total-row {
+        font-size: 0.95rem;
+    }
 }
 
 /* ============================================

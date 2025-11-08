@@ -12,11 +12,9 @@ if (empty($carrito)) {
 // Calcular totales
 $total = 0;
 foreach ($carrito as $id => $item) {
-    // Validar que existan las claves necesarias
     if (!isset($item['precio'], $item['cantidad'])) {
         continue;
     }
-    
     $subtotal = (float)$item['precio'] * (int)$item['cantidad'];
     $carrito[$id]['subtotal'] = $subtotal;
     $total += $subtotal;
@@ -37,8 +35,8 @@ if (isset($_GET['error'])) {
         case 'datos_largos':
             $mensaje = 'Algunos campos exceden la longitud permitida.';
             break;
-        case 'bd_error':
-            $mensaje = 'Hubo un error al procesar su solicitud. Intente nuevamente.';
+        case 'envio_no_seleccionado':
+            $mensaje = 'Debe seleccionar un método de entrega.';
             break;
         default:
             $mensaje = 'Ocurrió un error. Por favor intente nuevamente.';
@@ -65,7 +63,7 @@ if (isset($_GET['error'])) {
                 
                 <form action="datos_compra.php" method="post">
 
-                    <!-- Datos personales en 2 columnas -->
+                    <!-- Datos personales -->
                     <div class="fila-datos-personales">
                         <div>
                             <label for="nom">Nombre y apellido:</label>
@@ -109,11 +107,38 @@ if (isset($_GET['error'])) {
                                   placeholder="Escribe tu mensaje aquí (máximo 500 caracteres)..."></textarea>
                     </div>
 
+                    <!-- OPCIONES DE ENVÍO -->
+                    <div class="mt-4">
+                        <h4 style="color: var(--color-accent); margin-bottom: 10px;">Método de entrega</h4>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="metodo_envio" id="envio_domicilio" value="domicilio">
+                            <label class="form-check-label" for="envio_domicilio">
+                                🚚 Envío a domicilio (el costo se coordina por WhatsApp con nosotros).  
+                                <br><small>El cliente se hace cargo del costo total del envío y debe contactarse al <strong>11-3813-1307</strong>.</small>
+                            </label>
+                        </div>
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="radio" name="metodo_envio" id="retiro_local" value="retiro">
+                            <label class="form-check-label" for="retiro_local">
+                                🏬 Retiro por <strong>Av. Elcano 4012</strong> (sin costo)
+                            </label>
+                        </div>
+
+                        <!-- Campo de dirección, aparece solo si elige envío -->
+                        <div id="direccion_envio_container" class="mt-3" style="display: none;">
+                            <label for="direccion_envio">Dirección de entrega:</label>
+                            <input type="text" class="form-control" id="direccion_envio" name="direccion_envio"
+                                   placeholder="Ej: Calle 1234, Piso 2, Depto B" maxlength="150">
+                        </div>
+                    </div>
+
                     <div class="alert alert-info mt-4 mb-4" role="alert">
                         <div class="d-flex align-items-center">
                             <div>
                                 <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
-                                <p class="mb-0">Tu compra está protegida. Realizamos envíos seguros y coordinamos con vos todos los detalles para garantizar que recibas tu producto en perfectas condiciones.</p>
+                                <p class="mb-0">Protegemos tu privacidad y tus datos en cada paso, para que tu experiencia de compra sea segura y confiable.</p>
                             </div>
                         </div>
                     </div>
@@ -133,32 +158,17 @@ if (isset($_GET['error'])) {
             
             <div class="productos-lista">
                 <?php foreach ($carrito as $id => $item): ?>
-                    <?php
-                    // Validar que existan todas las claves necesarias
-                    if (!isset($item['foto'], $item['nombre'], $item['cantidad'], $item['precio'], $item['subtotal'])) {
-                        continue;
-                    }
-                    ?>
+                    <?php if (!isset($item['foto'], $item['nombre'], $item['cantidad'], $item['precio'], $item['subtotal'])) continue; ?>
                     <div class="producto-resumen">
                         <img src="../img/<?= htmlspecialchars($item['foto'], ENT_QUOTES, 'UTF-8') ?>" 
                              alt="Imagen de <?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?>" 
-                             class="producto-img"
-                             width="80"
-                             height="80">
+                             class="producto-img" width="80" height="80">
                         
                         <div class="producto-info">
-                            <div class="producto-nombre">
-                                <?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?>
-                            </div>
-                            <div class="producto-detalle">
-                                Cantidad: <?= htmlspecialchars((int)$item['cantidad'], ENT_QUOTES, 'UTF-8') ?>
-                            </div>
-                            <div class="producto-detalle">
-                                Precio unitario: $<?= htmlspecialchars(number_format($item['precio'], 2), ENT_QUOTES, 'UTF-8') ?>
-                            </div>
-                            <div class="producto-precio">
-                                Subtotal: $<?= htmlspecialchars(number_format($item['subtotal'], 2), ENT_QUOTES, 'UTF-8') ?>
-                            </div>
+                            <div class="producto-nombre"><?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="producto-detalle">Cantidad: <?= htmlspecialchars((int)$item['cantidad'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="producto-detalle">Precio unitario: $<?= htmlspecialchars(number_format($item['precio'], 2), ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="producto-precio">Subtotal: $<?= htmlspecialchars(number_format($item['subtotal'], 2), ENT_QUOTES, 'UTF-8') ?></div>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -175,6 +185,21 @@ if (isset($_GET['error'])) {
     </div>
 </div>
 
-<?php
-include_once("../components/footer.php");
-?>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const envio = document.getElementById("envio_domicilio");
+    const retiro = document.getElementById("retiro_local");
+    const direccion = document.getElementById("direccion_envio_container");
+
+    envio.addEventListener("change", () => {
+        if (envio.checked) direccion.style.display = "block";
+    });
+
+    retiro.addEventListener("change", () => {
+        if (retiro.checked) direccion.style.display = "none";
+        document.getElementById("direccion_envio").value = "";
+    });
+});
+</script>
+
+<?php include_once("../components/footer.php"); ?>

@@ -1,85 +1,73 @@
 <?php
-// APP_USR-5066491151862490-091918-e2f93d2552e63ebdf6c50734ae895f53-2703255358"
-
 session_start();
+require_once '../vendor/autoload.php';
+include_once("../conf/conf.php");
 
-// Cargar SDK
-require __DIR__ . '/../vendor/autoload.php';
+// 🔹 Cargar credenciales de producción
+MercadoPago\SDK::setAccessToken("APP_USR-1307864970065448-103010-e572d515f5f20e0d12a11c6b7ed8c116-182075690");
 
-// Configurar Access Token desde variable de entorno o archivo de configuración
-// NUNCA hardcodear el token en el código
-$mp_token = getenv('MERCADOPAGO_ACCESS_TOKEN') ?: 'TU_TOKEN_AQUI'; // Cambiar por tu método de configuración
-MercadoPago\SDK::setAccessToken($mp_token);
+// Verificar datos de compra
+$carrito = $_SESSION['carrito'] ?? [];
+$datos_compra = $_SESSION['datos_compra'] ?? null;
 
-// Validar que haya productos en el carrito
-if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
+if (empty($carrito) || !$datos_compra) {
     header("Location: carrito.php?error=carrito_vacio");
-    exit;
+    exit();
 }
 
-$carrito = $_SESSION['carrito'];
-
-// Crear preferencia de Mercado Pago
-$preference = new MercadoPago\Preference();
-$items = [];
-
-foreach ($carrito as $id => $item) {
-    // Validar que existan todos los campos necesarios
-    if (!isset($item['nombre'], $item['cantidad'], $item['precio'])) {
-        continue;
-    }
-    
-    // Validar que cantidad y precio sean válidos
-    $cantidad = (int) $item['cantidad'];
-    $precio = (float) $item['precio'];
-    
-    if ($cantidad <= 0 || $precio <= 0) {
-        continue;
-    }
-    
-    $mp_item = new MercadoPago\Item();
-    $mp_item->title = htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8');
-    $mp_item->quantity = $cantidad;
-    $mp_item->unit_price = $precio;
-    $items[] = $mp_item;
-}
-
-// Validar que haya items válidos
-if (empty($items)) {
-    header("Location: carrito.php?error=items_invalidos");
-    exit;
-}
-
-$preference->items = $items;
-
-// URLs de retorno (usar variable o constante, no hardcodear)
-$base_url = "https://tudominio.com"; // Cambiar por tu dominio real
-$preference->back_urls = [
-    "success" => $base_url . "/ruaj/pages/pago_exitoso.php",
-    "failure" => $base_url . "/ruaj/pages/pago_fallido.php",
-    "pending" => $base_url . "/ruaj/pages/pago_pendiente.php"
-];
-$preference->auto_return = "approved";
-
-// Intentar guardar preferencia con manejo de errores
 try {
-    $preference->save();
-    
-    // Validar que se haya generado el init_point
-    if (!isset($preference->init_point)) {
-        throw new Exception("No se pudo generar el link de pago");
+    // 🔹 Crear preferencia de pago
+    $preference = new MercadoPago\Preference();
+
+    $items = [];
+    foreach ($carrito as $item) {
+        if (!isset($item['nombre'], $item['precio'], $item['cantidad'])) continue;
+
+        $mp_item = new MercadoPago\Item();
+        $mp_item->title = $item['nombre'];
+        $mp_item->quantity = (int)$item['cantidad'];
+        $mp_item->unit_price = (float)$item['precio'];
+        $mp_item->currency_id = "ARS";
+        $items[] = $mp_item;
     }
-    
-    // Redirigir a Mercado Pago
+
+    $preference->items = $items;
+
+    // 🔹 Datos del comprador
+    $payer = new MercadoPago\Payer();
+    $payer->name = $datos_compra['nombre_completo'];
+    $payer->email = $datos_compra['mail'];
+    $payer->phone = [
+        "number" => $datos_compra['telefono']
+    ];
+    $preference->payer = $payer;
+
+    // 🔹 Redirecciones
+    $base_url = "localhost/ruaj/pages/";
+
+    $preference->back_urls = [
+        "success" => $base_url . "pago_exitoso.php",
+        "failure" => $base_url . "pago_fallido.php",
+        "pending" => $base_url . "pago_pendiente.php"
+    ];
+    $preference->auto_return = "approved";
+
+    // 🔹 Configuración adicional
+    $preference->statement_descriptor = "RUAJ DESIGN";
+    $preference->binary_mode = true; // Acepta solo pagos aprobados
+
+    // 🔹 Guardar preferencia
+    $preference->save();
+
+    if (!isset($preference->id)) {
+        throw new Exception("No se pudo generar la preferencia de pago.");
+    }
+
+    // 🔹 Redirigir al checkout de Mercado Pago
     header("Location: " . $preference->init_point);
-    exit;
-    
+    exit();
+
 } catch (Exception $e) {
-    // Registrar error en log
-    error_log("Error Mercado Pago: " . $e->getMessage());
-    
-    // Redirigir con mensaje de error
-    header("Location: carrito.php?error=pago_error");
-    exit;
+    echo "❌ Error Mercado Pago:<br>" . htmlspecialchars($e->getMessage());
 }
 ?>

@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+// 🔹 Limpiar datos de compra si el pago falló
+if (isset($_SESSION['datos_compra'])) {
+    unset($_SESSION['datos_compra']);
+}
+
 include_once("../components/header.php");
 ?>
 

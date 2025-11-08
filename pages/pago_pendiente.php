@@ -1,5 +1,6 @@
 <?php
 session_start();
+// 🔹 NO limpiamos la sesión porque el pago está pendiente
 include_once("../components/header.php");
 ?>
 
