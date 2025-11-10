@@ -43,6 +43,11 @@ body, html {
 body {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 h1 {
@@ -65,7 +70,10 @@ h1 {
 
 #dte {
     color: #2c2c2c;
+    text-align: center;  /* Fuerza el centrado del texto si Bootstrap no lo hace */
 }
+
+
 
 /* ============================================
    3. NAVEGACIÓN
@@ -159,6 +167,10 @@ h1 {
     color: var(--color-nav-text);
     background-color: var(--color-accent);
     transition: var(--transition-default);
+}
+
+#but {
+    margin: 0 auto;  /* Centra el botón si es necesario */
 }
 
 #otroProd:hover {
@@ -480,6 +492,7 @@ input[type="submit"] {
     background-position: center center;
 }
 
+
 .sobre-nosotros {
     background-color: var(--color-nav);
     min-height: 50vh;
@@ -567,7 +580,6 @@ footer,
     background-color: var(--color-accent) !important;
     border-top: 1px solid rgba(60, 57, 40, 0.1);
     flex-shrink: 0;
-    margin-top: 50px;
     width: 100%;
     color: var(--color-background);
 }

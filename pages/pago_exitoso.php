@@ -113,7 +113,7 @@ if (!isset($conf) || !$conf) {
 }
 ?>
 
-<!-- ✅ Vista -->
+<main>
 <div class="container mt-5 text-center">
   <h1 class="text-success">✅ ¡Pago exitoso!</h1>
   <p>Gracias por tu compra. Tu pago fue aprobado.</p>
@@ -127,5 +127,6 @@ if (!isset($conf) || !$conf) {
   <a href="productos_generales.php" class="btn btn-outline-success prod">Volver a la tienda</a>
   <a href="inicio.php" class="btn btn-outline-success prod">Ir al inicio</a>
 </div>
+</main>
 
 <?php include_once("../components/footer.php"); ?>

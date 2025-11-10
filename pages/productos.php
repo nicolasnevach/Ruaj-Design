@@ -31,7 +31,6 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
         echo '<div class="container mt-4">';
         echo '<h2 class="mb-4">' . $nombre_categoria . '</h2>';
         
-        // 🔹 CAMBIO PRINCIPAL: row-cols-1 row-cols-sm-2 row-cols-lg-3
         echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">';
 
         while ($producto = $resultado->fetch_assoc()) {
@@ -41,10 +40,27 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
             }
             
             $nombre = htmlspecialchars($producto['nombre_prod'], ENT_QUOTES, 'UTF-8');
-            $precio = htmlspecialchars(number_format($producto['precio'], 2), ENT_QUOTES, 'UTF-8');
+            $precio_base = (float)$producto['precio']; // Precio de respaldo
             $foto_frente = htmlspecialchars($producto['foto_frente'], ENT_QUOTES, 'UTF-8');
             $foto_costado = htmlspecialchars($producto['foto_costado'], ENT_QUOTES, 'UTF-8');
             $id_producto = (int)$producto['id_producto'];
+
+            // 🔹 OBTENER PRECIO DE LA PRIMERA MEDIDA
+            $stmt_medidas = $conf->prepare("SELECT precio FROM producto_medidas WHERE id_producto = ? LIMIT 1");
+            $stmt_medidas->bind_param("i", $id_producto);
+            $stmt_medidas->execute();
+            $result_medidas = $stmt_medidas->get_result();
+            
+            // Si hay medida, usar ese precio; sino usar el precio base
+            if ($result_medidas->num_rows > 0) {
+                $medida = $result_medidas->fetch_assoc();
+                $precio = (float)$medida['precio'];
+            } else {
+                $precio = $precio_base;
+            }
+            $stmt_medidas->close();
+            
+            $precio_descuento = $precio * 0.75; // 25% de descuento
 
             echo '
             <div class="col">
@@ -53,10 +69,18 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
                         <img src="../img/' . $foto_frente . '" class="img-front" alt="Vista frontal de ' . $nombre . '" loading="lazy">
                         <img src="../img/' . $foto_costado . '" class="img-hover" alt="Vista lateral de ' . $nombre . '" loading="lazy">
                     </a>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">' . $nombre . '</h5>
-                        <p class="card-text"><strong>Precio: $' . $precio . '</strong></p>
-                        <a class="btn btn-outline-success prod" href="detalle.php?id=' . $id_producto . '">Comprar</a>
+                        
+                        <div class="mt-auto">
+                            <p class="card-text mb-1">
+                                <strong style="font-size: 1.1rem;">Precio: $' . htmlspecialchars(number_format($precio, 2), ENT_QUOTES, 'UTF-8') . '</strong>
+                            </p>
+                            <p class="card-text mb-2" style="font-size: 0.85rem; color: #666;">
+                                <strong style="color: var(--color-nav-text); font-size: 1rem;">$' . htmlspecialchars(number_format($precio_descuento, 2), ENT_QUOTES, 'UTF-8') . '</strong> pagando en efectivo
+                            </p>
+                            <a class="btn btn-medida me-2 mb-2 prod" href="detalle.php?id=' . $id_producto . '">Comprar</a>
+                        </div>
                     </div>
                 </div>
             </div>';

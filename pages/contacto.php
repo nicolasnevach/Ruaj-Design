@@ -3,7 +3,7 @@ include_once("../components/header.php");
 ?>
 
 <h1 class="titu" id="titulo-formulario">¡Contanos sobre tu mueble!</h1>
-
+<main class="contenido-contacto">
 <div class="card" id="card_con">
   <div class="card-body">
     <form action="datos.php" method="post" enctype="multipart/form-data">
@@ -125,11 +125,12 @@ include_once("../components/header.php");
       </div>
 
       <div class="submit-container">
-        <input id="env" type="submit" name="submit" value="Enviar"> 
-      </div>
-    </form>
+          <input id="env" type="submit" name="submit" value="Enviar"> 
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+</main>
 
 <script>
 // Validación de tamaño de archivo (opcional pero recomendado)

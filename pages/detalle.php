@@ -104,7 +104,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
   <h2 class="price">Precio: $<span id="precioActual"><?php echo htmlspecialchars(number_format($primeraMedida['precio']), ENT_QUOTES, 'UTF-8'); ?></span></h2>
   <h3>
     <span id="precioDescuento">$<?php echo htmlspecialchars(number_format($primeraMedida['precio']*0.75), ENT_QUOTES, 'UTF-8'); ?></span>
-    Beneficio especial!! Ahorrá un 25% pagando en efectivo!
+    Beneficio exclusivo!! Ahorrá un 25% pagando en efectivo!
   </h3>
 </div>
 
@@ -160,7 +160,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
         También realizamos modelos a medida; consultanos por WhatsApp para recibir asesoramiento personalizado. <br>
 
-Cada pieza es única: al ser de madera natural, pueden presentarse diferencias en el tono del tinte entre un producto y otro. <br><br>
+
 
 <strong>Nuestros productos se destacan por su calidad y terminaciones.</strong>
 
@@ -178,14 +178,14 @@ Cada pieza es única: al ser de madera natural, pueden presentarse diferencias e
                 
               <strong>Envíos a todo el país:</strong>
 
-Realizamos envíos a domicilio en todo el territorio nacional.
-El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra.
-<strong>El valor del flete es a cargo del cliente, no</strong> aplica al descuento en efectivo. <br><br>
-Te damos como beneficio el enbalaje <strong>bonificado</strong> para que tu producto viaje mas seguro.
+    Realizamos envíos a domicilio en todo el territorio nacional.
+    El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra.
+    <strong>El valor del flete es a cargo del cliente, no aplica al descuento en efectivo.</strong> <br><br>
+    Te damos como beneficio el embalaje <strong>bonificado</strong> para que tu producto viaje mas seguro.
 
-<strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
+  <strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
 
-Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
+  Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
             </ul>
           </div>
         </div>
@@ -194,14 +194,13 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
   </div>
 
   <!-- Productos relacionados -->
-  <div class="row mt-5">
+<div class="row mt-5">
     <div class="col-12">
-      <h2 class="mb-4">Productos relacionados</h2>
+        <h2 class="mb-4">Productos relacionados</h2>
     </div>
-  </div>
+</div>
 
-  <!-- 🔹 CAMBIO PRINCIPAL: row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 -->
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
     <?php
     $stmt_rel = $conf->prepare("SELECT * FROM Producto WHERE id_categoria = ? AND id_producto != ? AND activo = 1 LIMIT 4");
     $stmt_rel->bind_param("ii", $id_categoria, $id_producto);
@@ -210,34 +209,59 @@ Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
 
     if ($rel_result && $rel_result->num_rows > 0) {
         while ($rel = $rel_result->fetch_assoc()) {
-            if (!isset($rel['nombre_prod'], $rel['foto_frente'], $rel['precio'], $rel['id_producto'])) {
+            if (!isset($rel['nombre_prod'], $rel['precio'], $rel['foto_frente'], $rel['foto_costado'], $rel['id_producto'])) {
                 continue;
             }
-            $rel_nombre = $rel['nombre_prod'];
-            $rel_foto = $rel['foto_frente'];
-            $rel_precio = $rel['precio'];
-            $rel_id = $rel['id_producto'];
+
+            $rel_nombre = htmlspecialchars($rel['nombre_prod'], ENT_QUOTES, 'UTF-8');
+            $rel_precio_base = (float)$rel['precio'];
+            $rel_foto_frente = htmlspecialchars($rel['foto_frente'], ENT_QUOTES, 'UTF-8');
+            $rel_foto_costado = htmlspecialchars($rel['foto_costado'], ENT_QUOTES, 'UTF-8');
+            $rel_id = (int)$rel['id_producto'];
+
+            // Obtener precio de la primera medida si existe
+            $stmt_med = $conf->prepare("SELECT precio FROM producto_medidas WHERE id_producto = ? LIMIT 1");
+            $stmt_med->bind_param("i", $rel_id);
+            $stmt_med->execute();
+            $res_med = $stmt_med->get_result();
+            if ($res_med && $res_med->num_rows > 0) {
+                $med = $res_med->fetch_assoc();
+                $rel_precio = (float)$med['precio'];
+            } else {
+                $rel_precio = $rel_precio_base;
+            }
+            $stmt_med->close();
+
+            $rel_precio_desc = $rel_precio * 0.75; // 25% descuento
     ?>
-        <div class="col">
-          <div class="card h-100">
-            <img src="../img/<?php echo htmlspecialchars($rel_foto); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($rel_nombre); ?>">
-            <div class="card-body">
-              <h5 class="card-title"><?php echo htmlspecialchars($rel_nombre); ?></h5>
-              <p class="card-text">$<?php echo htmlspecialchars(number_format($rel_precio), ENT_QUOTES, 'UTF-8'); ?></p>
-              <a class="btn btn-outline-success prod" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
+            <div class="col">
+                <div class="card h-100">
+                    <a href="detalle.php?id=<?php echo $rel_id; ?>" class="img-hover-wrap" style="text-decoration: none; color: inherit;">
+                        <img src="../img/<?php echo $rel_foto_frente; ?>" class="img-front" alt="Vista frontal de <?php echo $rel_nombre; ?>" loading="lazy">
+                        <img src="../img/<?php echo $rel_foto_costado; ?>" class="img-hover" alt="Vista lateral de <?php echo $rel_nombre; ?>" loading="lazy">
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><?php echo $rel_nombre; ?></h5>
+                        <div class="mt-auto">
+                            <p class="card-text mb-1">
+                                <strong style="font-size: 1.1rem;">Precio: $<?php echo number_format(round($rel_precio), 0, ',', '.'); ?></strong>
+                            </p>
+                            <p class="card-text mb-2" style="font-size: 0.85rem; color: #666;">
+                                <strong style="color: var(--color-nav-text); font-size: 1rem;">$<?php echo number_format(round($rel_precio_desc), 0, ',', '.'); ?></strong> pagando en efectivo
+                            </p>
+                            <a class="btn btn-medida me-2 mb-2 prod" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
     <?php
         }
     } else {
-        echo "<p class='text-center'>No hay productos relacionados.</p>";
+        echo "<p class='text-center'>Por el momento no hay productos relacionados.</p>";
     }
-
-    $stmt_rel->close();
-    $conf->close();
     ?>
-  </div>
+</div>
+
 </div>
 
 <!-- Modal de Zoom -->

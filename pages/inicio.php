@@ -28,12 +28,10 @@ include_once("../components/header.php");
 </div>
   
       <!-- Bloque de texto -->
-      <div class="col-lg-6 d-flex flex-column justify-content-start">
-        <p class="lead fw-bold fs-3 mb-3" id="dte">Diseñá tu estilo</p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-          <a class="btn btn-outline-success btn-lg" id="but" href="contacto.php">Arma tu diseño!</a>
-        </div>
-      </div>
+      <div class="text-center">
+      <p class="lead fw-bold fs-3 mb-3" id="dte">Diseñá tu estilo</p>
+      <a class="btn btn-outline-success btn-lg" id="but" href="contacto.php">Arma tu diseño!</a>
+    </div>
 
     </div>
   </div>
@@ -77,25 +75,49 @@ if ($resultado && $resultado->num_rows > 0) {
         continue;
     }
     $nombre = htmlspecialchars($producto['nombre_prod'], ENT_QUOTES, 'UTF-8');
-    $precio = htmlspecialchars(number_format($producto['precio']), ENT_QUOTES, 'UTF-8');
+    $precio_base = (float)$producto['precio']; // Precio de respaldo
     $foto_frente = htmlspecialchars($producto['foto_frente'], ENT_QUOTES, 'UTF-8');
     $id = (int)$producto['id_producto'];
     $foto_costado = htmlspecialchars($producto['foto_costado'], ENT_QUOTES, 'UTF-8');
+
+    // 🔹 OBTENER PRECIO DE LA PRIMERA MEDIDA
+    $stmt_medidas = $conf->prepare("SELECT precio FROM producto_medidas WHERE id_producto = ? LIMIT 1");
+    $stmt_medidas->bind_param("i", $id);
+    $stmt_medidas->execute();
+    $result_medidas = $stmt_medidas->get_result();
+    
+    // Si hay medida, usar ese precio; sino usar el precio base
+    if ($result_medidas->num_rows > 0) {
+        $medida = $result_medidas->fetch_assoc();
+        $precio = (float)$medida['precio'];
+    } else {
+        $precio = $precio_base;
+    }
+    $stmt_medidas->close();
+    
+    $precio_descuento = $precio * 0.75; // 25% de descuento
     ?>
 
     <div class="col">
       <div class="card h-100">
-        <div class="img-hover-wrap">
-          <a href="detalle.php?id=<?php echo $id; ?>">
+        <!-- 🔹 ENLACE EN LA IMAGEN RESTAURADO -->
+        <a href="detalle.php?id=<?php echo $id; ?>" class="img-hover-wrap" style="text-decoration: none; color: inherit;">
           <img src="../img/<?php echo $foto_frente; ?>" class="img-front" alt="Vista frontal de <?php echo $nombre; ?>" loading="lazy">
           <img src="../img/<?php echo $foto_costado; ?>" class="img-hover" alt="Vista lateral de <?php echo $nombre; ?>" loading="lazy">
         </a>
-          
-        </div>
-        <div class="card-body">
+        
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title"><?php echo $nombre; ?></h5>
-          <p class="card-text"><strong>Precio: $<?php echo $precio; ?></strong></p>
-          <a class="btn btn-outline-success prod"  href="detalle.php?id=<?php echo $id; ?>">Comprar</a>
+          
+          <div class="mt-auto">
+            <p class="card-text mb-1">
+              <strong style="font-size: 1.1rem;">Precio: $<?php echo htmlspecialchars(number_format($precio, 2), ENT_QUOTES, 'UTF-8'); ?></strong>
+            </p>
+            <p class="card-text mb-2" style="font-size: 0.85rem; color: #666;">
+              <strong style="color: var(--color-nav-text); font-size: 1rem;">$<?php echo htmlspecialchars(number_format($precio_descuento, 2), ENT_QUOTES, 'UTF-8'); ?></strong> pagando en efectivo
+            </p>
+            <a class="btn btn-medida me-2 mb-2 prod" href="detalle.php?id=<?php echo $id; ?>">Comprar</a>
+          </div>
         </div>
         <div class="card-footer">
           <small class="text-body-secondary">Producto destacado del mes</small>
@@ -129,7 +151,7 @@ $conf->close();
 </section>
 
 
-<section class="doble-columna">
+<section id="contacto" class="doble-columna">
   <div class="columna section-fondo">
     <div class="map-container">
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" 
@@ -149,7 +171,6 @@ $conf->close();
 
 
 <?php
-echo "<!-- DEBUG: llegué al footer -->";
 
 include_once("../components/footer.php");
 ?>

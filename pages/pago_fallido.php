@@ -8,7 +8,7 @@ if (isset($_SESSION['datos_compra'])) {
 
 include_once("../components/header.php");
 ?>
-
+<main>
 <div class="container mt-5 text-center">
   <h1 class="text-danger">❌ Pago fallido</h1>
   <p>Lo sentimos, tu pago no pudo ser procesado.</p>
@@ -20,5 +20,5 @@ include_once("../components/header.php");
   <a href="carrito.php" class="btn btn-warning mt-3">Volver al carrito</a>
   <a href="productos_generales.php" class="btn btn-outline-secondary mt-3">Seguir comprando</a>
 </div>
-
+</main>
 <?php include_once("../components/footer.php"); ?>
