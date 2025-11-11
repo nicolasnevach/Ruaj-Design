@@ -69,9 +69,6 @@
     <div class="social-icon" aria-label="Pago con American Express">
       <img src="../img/amex.png" alt="American Express" width="40" height="40">
     </div>
-    <div class="social-icon" aria-label="Pago con Diners Club">
-      <img src="../img/diners.png" alt="Diners Club" width="40" height="40">
-    </div>
     <div class="social-icon" aria-label="Pago con CABAL">
       <img src="../img/cabal.png" alt="CABAL" width="40" height="40">
     </div>

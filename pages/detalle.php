@@ -142,7 +142,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
               <?php endfor; ?>
             </select>
 
-            <button type="submit" class="btn btn-outline-success btn-agregar w-100 mt-2 prod">
+            <button type="submit" class="btn btn-outline-success btn-agregar w-100 mt-2" id="but">
               Agregar al carrito
             </button>
           </form>
@@ -179,7 +179,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
               <strong>Envíos a todo el país:</strong>
 
     Realizamos envíos a domicilio en todo el territorio nacional.
-    El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra.
+    El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra. <br>
     <strong>El valor del flete es a cargo del cliente, no aplica al descuento en efectivo.</strong> <br><br>
     Te damos como beneficio el embalaje <strong>bonificado</strong> para que tu producto viaje mas seguro.
 
