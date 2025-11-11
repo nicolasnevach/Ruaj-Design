@@ -108,7 +108,7 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
         echo '
         <section class="text-center mt-5">
             <h2 class="mb-3">' . $nombre_categoria . '</h2>
-            <h4 class="text-muted">🧩 Productos en desarrollo</h4>
+            <h4 class="text-muted"> Productos en desarrollo</h4>
             <p class="lead" style="max-width:600px; margin:auto;">
                 Estamos diseñando y perfeccionando esta línea de productos. Muy pronto estarán disponibles para vos.
             </p>

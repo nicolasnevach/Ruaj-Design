@@ -101,11 +101,20 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
         <!-- Precio -->
         <div class="price-container mb-4">
-  <h2 class="price">Precio: $<span id="precioActual"><?php echo htmlspecialchars(number_format($primeraMedida['precio']), ENT_QUOTES, 'UTF-8'); ?></span></h2>
+  <h2 class="price">
+  Precio: $
+  <span id="precioActual">
+    <?php echo htmlspecialchars(number_format($primeraMedida['precio'], 0, ',', '.'), ENT_QUOTES, 'UTF-8'); ?>
+  </span>
+</h2>
+
   <h3>
-    <span id="precioDescuento">$<?php echo htmlspecialchars(number_format($primeraMedida['precio']*0.75), ENT_QUOTES, 'UTF-8'); ?></span>
-    Beneficio exclusivo!! Ahorrá un 25% pagando en efectivo!
-  </h3>
+  <span id="precioDescuento">
+    $<?php echo htmlspecialchars(number_format(floor($primeraMedida['precio'] * 0.75), 0, ',', '.'), ENT_QUOTES, 'UTF-8'); ?>
+  </span>
+  Beneficio exclusivo!! Ahorrá un 25% pagando en efectivo!
+</h3>
+
 </div>
 
 
@@ -181,7 +190,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
     Realizamos envíos a domicilio en todo el territorio nacional.
     El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra. <br>
     <strong>El valor del flete es a cargo del cliente, no aplica al descuento en efectivo.</strong> <br><br>
-    Te damos como beneficio el embalaje <strong>bonificado</strong> para que tu producto viaje mas seguro.
+    Te damos como beneficio el embalaje <strong>bonificado</strong> para que tu producto viaje mas seguro. <br>
 
   <strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
 
@@ -317,7 +326,7 @@ document.querySelectorAll('.btn-medida').forEach(btn=>{
     const precioDescuento = document.querySelector('#precioDescuento');
     if (precioDescuento) {
       const nuevoPrecio = parseFloat(btn.dataset.precio);
-      const precioConDescuento = nuevoPrecio * 0.75;
+      const precioConDescuento = Math.floor(nuevoPrecio * 0.75);
       precioDescuento.textContent = `$${precioConDescuento.toLocaleString('es-AR')}`;
     }
   });

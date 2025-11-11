@@ -47,10 +47,9 @@ include_once("../components/header.php");
   </div>
 </section>
 
-<section class="section-fondo marg mg">
+<section class="marg mg" style="padding: 60px 0; background-color: var(--color-background);">
   <h1 class="dest titu mg">Productos Destacados:</h1>
   <div class="container" id="ser">
-    <!-- 🔹 CAMBIO PRINCIPAL: row-cols-1 row-cols-sm-2 row-cols-lg-3 -->
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
 
 <?php
@@ -151,8 +150,8 @@ $conf->close();
 </section>
 
 
-<section id="contacto" class="doble-columna">
-  <div class="columna section-fondo">
+<section id="contacto" class="doble-columna section-fondo-contacto">
+  <div class="columna">
     <div class="map-container">
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" 
                 style="border:0;" 
@@ -162,7 +161,7 @@ $conf->close();
                 title="Ubicación de Ruaj Design en Chacarita, CABA"></iframe>
     </div>
   </div>
-  <div class="columna section-fondo">
+  <div class="columna columna-texto-contacto">
     <h2><strong>CONTACTO FÁBRICA</strong></h2>
     <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 CHACARITA - CABA.</p>
     <a href="https://wa.me/541138131307" target="_blank" rel="noopener noreferrer" class="boton"><strong>Ir a Whatsapp</strong></a>
