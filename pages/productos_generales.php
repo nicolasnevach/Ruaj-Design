@@ -1,8 +1,12 @@
 <?php
+// Iniciar sesión solo si no está activa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include_once("../conf/conf.php");
 include_once("../components/header.php");
 
-$sql = "SELECT * FROM Producto WHERE activo = 1";
+$sql = "SELECT * FROM producto WHERE activo = 1";
 $resultado = $conf->query($sql);
 
 if ($resultado && $resultado->num_rows > 0) {

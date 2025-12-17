@@ -24,14 +24,14 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
     $stmt_cat->close();
 
     // 🔹 Verificar si existen productos activos o inactivos
-    $stmt_activos = $conf->prepare("SELECT COUNT(*) AS total_activos FROM Producto WHERE id_categoria = ? AND activo = 1");
+    $stmt_activos = $conf->prepare("SELECT COUNT(*) AS total_activos FROM producto WHERE id_categoria = ? AND activo = 1");
     $stmt_activos->bind_param("i", $categoria_id);
     $stmt_activos->execute();
     $result_activos = $stmt_activos->get_result();
     $total_activos = ($result_activos->fetch_assoc())['total_activos'] ?? 0;
     $stmt_activos->close();
 
-    $stmt_inactivos = $conf->prepare("SELECT COUNT(*) AS total_inactivos FROM Producto WHERE id_categoria = ? AND activo = 0");
+    $stmt_inactivos = $conf->prepare("SELECT COUNT(*) AS total_inactivos FROM producto WHERE id_categoria = ? AND activo = 0");
     $stmt_inactivos->bind_param("i", $categoria_id);
     $stmt_inactivos->execute();
     $result_inactivos = $stmt_inactivos->get_result();
@@ -41,7 +41,7 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
     // 🔹 Si hay productos activos, los mostramos
     if ($total_activos > 0) {
 
-        $stmt = $conf->prepare("SELECT * FROM Producto WHERE id_categoria = ? AND activo = 1");
+        $stmt = $conf->prepare("SELECT * FROM producto WHERE id_categoria = ? AND activo = 1");
         $stmt->bind_param("i", $categoria_id);
         $stmt->execute();
         $resultado = $stmt->get_result();
@@ -122,7 +122,7 @@ if (isset($_GET['categoria']) && is_numeric($_GET['categoria'])) {
     echo "<div class='mt-5 text-center alert alert-warning'>No se seleccionó ninguna categoría válida.</div>";
 }
 
-echo '</main>'; // 🔹 Cierre del main
+echo '</main>'; 
 $conf->close();
 include_once("../components/footer.php");
 ?>

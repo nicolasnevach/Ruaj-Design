@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 // 🔹 NO limpiamos la sesión porque el pago está pendiente
 include_once("../components/header.php");
 ?>
@@ -9,7 +10,9 @@ include_once("../components/header.php");
   <p>Tu pago está siendo procesado. Te notificaremos cuando se confirme.</p>
 
   <?php if (isset($_GET['status'])): ?>
-    <p><strong>Estado:</strong> <?php echo htmlspecialchars($_GET['status'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <p><strong>Estado:</strong> 
+        <?php echo htmlspecialchars($_GET['status'], ENT_QUOTES, 'UTF-8'); ?>
+    </p>
   <?php endif; ?>
 
   <a href="productos_generales.php" class="btn btn-secondary mt-3">Seguir comprando</a>

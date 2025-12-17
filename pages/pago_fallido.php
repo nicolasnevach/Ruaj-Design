@@ -14,7 +14,9 @@ include_once("../components/header.php");
   <p>Lo sentimos, tu pago no pudo ser procesado.</p>
 
   <?php if (isset($_GET['status'])): ?>
-    <p><strong>Estado:</strong> <?php echo htmlspecialchars($_GET['status'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <p><strong>Estado:</strong> 
+        <?php echo htmlspecialchars($_GET['status'], ENT_QUOTES, 'UTF-8'); ?>
+    </p>
   <?php endif; ?>
 
   <a href="carrito.php" class="btn btn-warning mt-3">Volver al carrito</a>

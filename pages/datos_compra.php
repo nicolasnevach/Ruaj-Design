@@ -24,6 +24,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
+    // VALIDACIÓN AGREGADA (único cambio)
+    if (!preg_match('/^[0-9 ]+$/', $telefono)) {
+        header("Location: prepago.php?error=telefono_invalido");
+        exit();
+    }
+
     // Validar método de envío
     if (empty($metodo_envio)) {
         header("Location: prepago.php?error=envio_no_seleccionado");
@@ -59,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['datos_compra'] = [
         'nombre_completo' => $nombre_completo,
         'mail' => $mail,
-        'telefono' => $telefono,
+        'telefono' => $telefono, // SE GUARDA TAL CUAL LO INGRESÓ (ya validado)
         'comentarios' => $comentarios,
         'metodo_envio' => $metodo_envio,
         'direccion_envio' => $metodo_envio === "domicilio" ? $direccion_envio : "Retiro en local",

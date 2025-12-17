@@ -1,39 +1,46 @@
 <?php
-include_once("../components/header.php");
+// Iniciar sesión solo si no está activa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
+include_once(__DIR__ . "/../components/header.php");
 ?>
 <section class="section-fondo">
-  <div class="container col-xxl-8 px-4 py-5">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+  <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
 
-      <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="https://placehold.co/250x100" class="d-block w-100" alt="Imagen destacada 1" width="250" height="100">
+      <img src="https://placehold.co/1920x600" class="d-block w-100" alt="Imagen destacada 1">
     </div>
+
     <div class="carousel-item">
-      <img src="https://placehold.co/250x100" class="d-block w-100" alt="Imagen destacada 2" width="250" height="100">
+      <img src="https://placehold.co/1920x600" class="d-block w-100" alt="Imagen destacada 2">
     </div>
+
     <div class="carousel-item">
-      <img src="https://placehold.co/250x100" class="d-block w-100" alt="Imagen destacada 3" width="250" height="100">
+      <img src="https://placehold.co/1920x600" class="d-block w-100" alt="Imagen destacada 3">
     </div>
   </div>
+
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Anterior</span>
   </button>
+
   <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Siguiente</span>
   </button>
-</div>
-  
-      <!-- Bloque de texto -->
-      <div class="text-center">
-      <p class="lead fw-bold fs-3 mb-3" id="dte">Diseñá tu estilo</p>
-      <a class="btn btn-outline-success btn-lg" id="but" href="contacto.php">Arma tu diseño!</a>
-    </div>
 
-    </div>
+</div>
+
+   
+
+  <div class="text-center py-4">
+    <p class="lead fw-bold fs-3 mb-3" id="dte">Diseñá tu estilo</p>
+    <a class="btn btn-outline-success btn-lg" id="but" href="contacto.php">Arma tu diseño!</a>
   </div>
 </section>
 
@@ -42,7 +49,7 @@ include_once("../components/header.php");
     <h2><strong>Sobre Nosotros!</strong></h2>
     <p>
       Somos una empresa dedicada a la fabricación de una gran variedad de productos realizados en madera de pino, álamo, petiribí y melaminas, todo de excelente calidad, para satisfacer todas las necesidades de amoblamiento de tu hogar y negocio al mejor precio del mercado, brindando también la posibilidad de poder diseñarlos y realizarlos a tu medida.
-      Contamos con 10 años de trayectoria en el rubro, lo que garantiza la calidad y dedicación en nuestros productos.
+      Contamos con más de 10 años de trayectoria en el rubro, lo que garantiza la calidad y dedicación en nuestros productos.
     </p>
   </div>
 </section>
@@ -53,13 +60,13 @@ include_once("../components/header.php");
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
 
 <?php
-include_once("../conf/conf.php");
+include_once(__DIR__ . "/../conf/conf.php");
 
-$productos_destacados = ['Mesa de Luz Dubai', 'Comoda Venecia 4 Cajones', 'Recibidor Londres'];
+$productos_destacados = ['Mesa de Luz Dubai', 'Comoda Venecia 4 Cajones', 'Rack Palermo'];
 
 // Usar prepared statement con placeholders
 $placeholders = implode(',', array_fill(0, count($productos_destacados), '?'));
-$sql = "SELECT * FROM Producto WHERE nombre_prod IN ($placeholders) AND activo = 1";
+$sql = "SELECT * FROM producto WHERE nombre_prod IN ($placeholders) AND activo = 1";
 $stmt = $conf->prepare($sql);
 
 // Bind dinámico
@@ -74,18 +81,16 @@ if ($resultado && $resultado->num_rows > 0) {
         continue;
     }
     $nombre = htmlspecialchars($producto['nombre_prod'], ENT_QUOTES, 'UTF-8');
-    $precio_base = (float)$producto['precio']; // Precio de respaldo
+    $precio_base = (float)$producto['precio'];
     $foto_frente = htmlspecialchars($producto['foto_frente'], ENT_QUOTES, 'UTF-8');
     $id = (int)$producto['id_producto'];
     $foto_costado = htmlspecialchars($producto['foto_costado'], ENT_QUOTES, 'UTF-8');
 
-    // 🔹 OBTENER PRECIO DE LA PRIMERA MEDIDA
     $stmt_medidas = $conf->prepare("SELECT precio FROM producto_medidas WHERE id_producto = ? LIMIT 1");
     $stmt_medidas->bind_param("i", $id);
     $stmt_medidas->execute();
     $result_medidas = $stmt_medidas->get_result();
     
-    // Si hay medida, usar ese precio; sino usar el precio base
     if ($result_medidas->num_rows > 0) {
         $medida = $result_medidas->fetch_assoc();
         $precio = (float)$medida['precio'];
@@ -94,12 +99,11 @@ if ($resultado && $resultado->num_rows > 0) {
     }
     $stmt_medidas->close();
     
-    $precio_descuento = $precio * 0.75; // 25% de descuento
+    $precio_descuento = $precio * 0.75;
     ?>
 
     <div class="col">
       <div class="card h-100">
-        <!-- 🔹 ENLACE EN LA IMAGEN RESTAURADO -->
         <a href="detalle.php?id=<?php echo $id; ?>" class="img-hover-wrap" style="text-decoration: none; color: inherit;">
           <img src="../img/<?php echo $foto_frente; ?>" class="img-front" alt="Vista frontal de <?php echo $nombre; ?>" loading="lazy">
           <img src="../img/<?php echo $foto_costado; ?>" class="img-hover" alt="Vista lateral de <?php echo $nombre; ?>" loading="lazy">
@@ -145,31 +149,23 @@ $conf->close();
     <a target="_blank" rel="noopener noreferrer" href="https://wa.me/541138131307" class="boton"><strong>Manos a la obra! Diseñemos tu mueble!</strong></a>
   </div>
   <div class="columna imagenes">
-    <img src="../img/planos.jpg" alt="Planos y diseños de muebles personalizados" width="600" height="400" loading="lazy" />
+    <img src="../img/planos2.jpg" alt="Planos y diseños de muebles personalizados" width="600" height="400" loading="lazy" />
   </div>
 </section>
-
 
 <section id="contacto" class="doble-columna section-fondo-contacto">
   <div class="columna">
     <div class="map-container">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d821.207598262171!2d-58.4609490714786!3d-34.58315789416701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5e1a9ab5cb5%3A0xa877ff815cbcd7b!2sAv.%20Elcano%204012%2C%20C1427CHR%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1758142359212!5m2!1ses-419!2sar" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade"
-                title="Ubicación de Ruaj Design en Chacarita, CABA"></iframe>
+         <img src="../img/mapa.jpg" alt="Mapa fábrica" width="932" height="513" loading="lazy" />
     </div>
   </div>
   <div class="columna columna-texto-contacto">
     <h2><strong>CONTACTO FÁBRICA</strong></h2>
-    <p><strong>E-mail:</strong> ruajdesign@gmail.com <strong>Whatsapp:</strong> 11-3813-1307 CHACARITA - CABA.</p>
+    <p><strong>E-mail:</strong> ruajdesign@gmail.com <br> <strong>Whatsapp:</strong> 11-3813-1307 <br> CHACARITA - CABA.</p>
     <a href="https://wa.me/541138131307" target="_blank" rel="noopener noreferrer" class="boton"><strong>Ir a Whatsapp</strong></a>
   </div>
 </section>
 
-
 <?php
-
-include_once("../components/footer.php");
+include_once(__DIR__ . "/../components/footer.php");
 ?>

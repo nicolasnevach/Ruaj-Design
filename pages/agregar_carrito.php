@@ -1,5 +1,9 @@
 <?php
-session_start();
+// Iniciar sesión solo si no está activa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include_once("../conf/conf.php");
 
 // Validar que existan todos los datos
@@ -20,8 +24,8 @@ if (empty($medida)) {
     exit;
 }
 
-// Prepared statement para obtener datos del producto
-$stmt = $conf->prepare("SELECT nombre_prod, foto_zoom FROM Producto WHERE id_producto = ?");
+// Consultar producto en la base de datos
+$stmt = $conf->prepare("SELECT nombre_prod, foto_zoom FROM producto WHERE id_producto = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $resultado = $stmt->get_result();

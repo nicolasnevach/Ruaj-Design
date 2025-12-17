@@ -1,6 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
-include_once("../conf/conf.php"); // conexión: $conf
+require_once '../vendor/autoload.php';
+include_once("../conf/conf.php");
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if (!isset($_SESSION['datos_compra']) || !isset($_SESSION['carrito'])) {
     header("Location: carrito.php");
@@ -34,9 +42,7 @@ $direccion_envio = ($metodo_envio === 'domicilio') ? ($datos['direccion_envio'] 
 // ✅ Sanitización de strings
 $nombre_db = $datos['nombre_completo'] ?? '';
 $mail_db = $datos['mail'] ?? '';
-$telefono_db = isset($datos['telefono']) 
-    ? preg_replace('/[^0-9+\s-]/', '', trim((string)$datos['telefono'])) 
-    : '';
+$telefono_db = $datos['telefono'] ?? '';
 $comentarios_db = $datos['comentarios'] ?? '';
 $subtotal_db = (float)$datos['subtotal'];
 $total_db = (float)$datos['total'];
@@ -45,9 +51,9 @@ $total_db = (float)$datos['total'];
 $sql = "INSERT INTO compras (nombre_completo, mail, telefono, comentarios, subtotal, total, metodo_envio, direccion_envio)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-if (!isset($conf) || !$conf) {
-    file_put_contents(__DIR__ . '/../error_db.txt', "[".date('Y-m-d H:i:s')."] ❌ No se encontró la conexión a la BD.\n", FILE_APPEND);
-} else {
+$id_compra = 0;
+
+if (isset($conf) && $conf) {
     if ($stmt = $conf->prepare($sql)) {
         $stmt->bind_param(
             "ssssddss",
@@ -63,54 +69,80 @@ if (!isset($conf) || !$conf) {
 
         if ($stmt->execute()) {
             $id_compra = $stmt->insert_id;
-
-            // ✅ Crear mensaje
-            $mensaje = "=== NUEVA COMPRA #$id_compra ===\n";
-            $mensaje .= "Fecha: " . date("d/m/Y H:i:s") . "\n";
-            $mensaje .= "Cliente: $nombre_db\n";
-            $mensaje .= "Email: $mail_db\n";
-            $mensaje .= "Teléfono: $telefono_db\n";
-            $mensaje .= "Método de envío: $metodo_envio\n";
-            if ($metodo_envio === 'domicilio') {
-                $mensaje .= "Dirección: $direccion_envio\n";
-            }
-            $mensaje .= "Subtotal: $" . number_format($subtotal_db, 2) . "\n";
-            $mensaje .= "Total: $" . number_format($total_db, 2) . "\n\n";
-            $mensaje .= "Productos:\n";
-            foreach ($carrito as $it) {
-                if (isset($it['nombre'], $it['cantidad'], $it['precio'])) {
-                    $mensaje .= "- {$it['nombre']} x{$it['cantidad']} ($" . number_format($it['precio'], 2) . ")\n";
-                }
-            }
-            $mensaje .= "\n----------------------------------------\n\n";
-
-            // ✅ Guardar confirmación
-            file_put_contents(__DIR__ . '/../confirmaciones.txt', $mensaje, FILE_APPEND);
-
-            // ✅ Enviar correos (silenciosos)
-            $headers = "From: Ruaj Design <noreply@ruajdesign.com>\r\n";
-            $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-            $mensaje_cliente = "Gracias por tu compra. Pedido #$id_compra\n\n";
-            $mensaje_cliente .= "Tu pago fue aprobado correctamente.\n";
-            $mensaje_cliente .= "Recordá que si seleccionaste envío a domicilio, debés comunicarte con nosotros al 11-3813-1307 para coordinar detalles del envío.\n\n";
-            $mensaje_cliente .= $mensaje;
-
-            @mail($mail_db, "Confirmación de compra #$id_compra - Ruaj Design", $mensaje_cliente, $headers);
-            @mail("ruajdesign@gmail.com", "Nueva compra #$id_compra", $mensaje, $headers);
-
-            // ✅ Limpiar sesión
-            unset($_SESSION['datos_compra']);
-            unset($_SESSION['carrito']);
         } else {
-            file_put_contents(__DIR__ . '/../error_db.txt', "[".date('Y-m-d H:i:s')."] ❌ Error ejecutando insert: ".$stmt->error."\n", FILE_APPEND);
+            file_put_contents(__DIR__ . '/../error_db.txt', "[".date('Y-m-d H:i:s')."] ❌ Error insert: ".$stmt->error."\n", FILE_APPEND);
         }
-
         $stmt->close();
-    } else {
-        file_put_contents(__DIR__ . '/../error_db.txt', "[".date('Y-m-d H:i:s')."] ❌ Error preparando query: ".$conf->error."\n", FILE_APPEND);
     }
 }
+
+// ✅ Crear mensaje para correos
+$mensaje = "=== NUEVA COMPRA #$id_compra ===\n";
+$mensaje .= "Fecha: " . date("d/m/Y H:i:s") . "\n";
+$mensaje .= "Cliente: $nombre_db\n";
+$mensaje .= "Email: $mail_db\n";
+$mensaje .= "Teléfono: $telefono_db\n";
+$mensaje .= "Método de envío: $metodo_envio\n";
+if ($metodo_envio === 'domicilio') {
+    $mensaje .= "Dirección: $direccion_envio\n";
+}
+$mensaje .= "Subtotal: $" . number_format($subtotal_db, 2) . "\n";
+$mensaje .= "Total: $" . number_format($total_db, 2) . "\n\n";
+$mensaje .= "Productos:\n";
+foreach ($carrito as $it) {
+    if (isset($it['nombre'], $it['cantidad'], $it['precio'])) {
+        $mensaje .= "- {$it['nombre']} x{$it['cantidad']} ($" . number_format($it['precio'], 2) . ")\n";
+    }
+}
+
+// ✅ Guardar confirmación en archivo
+file_put_contents(__DIR__ . '/../confirmaciones.txt', $mensaje . "\n----------------------------------------\n\n", FILE_APPEND);
+
+// ✅ Función para enviar correo con PHPMailer
+function enviarCorreo($destinatario, $asunto, $cuerpo) {
+    $mail = new PHPMailer(true);
+    
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ruajdesign@gmail.com';
+        $mail->Password = 'myvufaxmuiziynxn';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->CharSet = 'UTF-8';
+        
+        $mail->setFrom('ruajdesign@gmail.com', 'Ruaj Design');
+        $mail->addAddress($destinatario);
+        
+        $mail->isHTML(false);
+        $mail->Subject = $asunto;
+        $mail->Body = $cuerpo;
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        file_put_contents(__DIR__ . '/../error_mail.txt', "[".date('Y-m-d H:i:s')."] ❌ Error mail: ".$mail->ErrorInfo."\n", FILE_APPEND);
+        return false;
+    }
+}
+
+// ✅ Enviar correo al cliente
+$mensaje_cliente = "¡Gracias por tu compra! Pedido #$id_compra\n\n";
+$mensaje_cliente .= "Tu pago fue aprobado correctamente.\n";
+if ($metodo_envio === 'domicilio') {
+    $mensaje_cliente .= "Recordá comunicarte con nosotros al 11-3813-1307 para coordinar el envío.\n\n";
+}
+$mensaje_cliente .= $mensaje;
+
+enviarCorreo($mail_db, "Confirmación de compra #$id_compra - Ruaj Design", $mensaje_cliente);
+
+// ✅ Enviar correo al admin
+enviarCorreo("ruajdesign@gmail.com", "Nueva compra #$id_compra", $mensaje);
+
+// ✅ Limpiar sesión
+unset($_SESSION['datos_compra']);
+unset($_SESSION['carrito']);
 ?>
 
 <main>

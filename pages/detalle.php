@@ -1,7 +1,10 @@
 <?php
-session_start();
-include_once("../components/header.php");
-include_once("../conf/conf.php");
+// Iniciar sesión solo si no está activa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include_once(__DIR__ . "/../components/header.php");
+include_once(__DIR__ . "/../conf/conf.php");
 
 if (isset($_GET['ok']) && $_GET['ok'] == '1') {
     echo '<div class="mensaje-carrito">Producto agregado al carrito correctamente!</div>';
@@ -9,21 +12,21 @@ if (isset($_GET['ok']) && $_GET['ok'] == '1') {
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "<p class='text-center mt-5'>Producto no especificado.</p>";
-    include_once("../components/footer.php");
+    include_once(__DIR__ . "/../components/footer.php");
     exit;
 }
 
 $id_producto = (int) $_GET['id'];
 
-// --- Producto principal ---
-$stmt = $conf->prepare("SELECT * FROM Producto WHERE id_producto = ? AND activo = 1 LIMIT 1");
+/*** 🔥 TABLA CAMBIADA A MINÚSCULAS ***/
+$stmt = $conf->prepare("SELECT * FROM producto WHERE id_producto = ? AND activo = 1 LIMIT 1");
 $stmt->bind_param("i", $id_producto);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
     echo "<p class='text-center mt-5'>Producto no encontrado.</p>";
-    include_once("../components/footer.php");
+    include_once(__DIR__ . "/../components/footer.php");
     exit;
 }
 
@@ -38,7 +41,7 @@ $id_categoria = $producto['id_categoria'];
 
 $stmt->close();
 
-// --- Obtener medidas del producto ---
+/*** 🔥 TABLA CAMBIADA A MINÚSCULAS ***/
 $stmt_medidas = $conf->prepare("SELECT * FROM producto_medidas WHERE id_producto = ?");
 $stmt_medidas->bind_param("i", $id_producto);
 $stmt_medidas->execute();
@@ -51,26 +54,22 @@ while ($row = $result_medidas->fetch_assoc()) {
 }
 $stmt_medidas->close();
 
-// --- Determinar primera medida ---
 $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$precio];
 ?>
-
-
 
 <div class="container mt-4">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="inicio.php" class="text-decoration-none" style="color: var(--color-text);">Inicio</a></li>
-      <li class="breadcrumb-item"><a href="productos_generales.php" class="text-decoration-none" style="color: var(--color-text);">Productos</a></li>
+      <li class="breadcrumb-item"><a href="/pages/inicio.php" class="text-decoration-none" style="color: var(--color-text);">Inicio</a></li>
+      <li class="breadcrumb-item"><a href="/pages/productos_generales.php" class="text-decoration-none" style="color: var(--color-text);">Productos</a></li>
       <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($nombre); ?></li>
     </ol>
   </nav>
 
   <div class="row">
-    <!-- 🔹 CAMBIO: col-md-5 para mejor responsive -->
     <div class="col-12 col-md-5 mb-4">
       <div class="product-image-main mb-3">
-        <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" 
+        <img src="/img/<?php echo htmlspecialchars($foto_frente); ?>" 
              class="img-fluid rounded" 
              alt="<?php echo htmlspecialchars($nombre); ?>" 
              id="main-product-image"
@@ -79,18 +78,17 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
       <div class="row thumbnails gx-2">
         <div class="col-4">
-          <img src="../img/<?php echo htmlspecialchars($foto_frente); ?>" class="img-fluid rounded thumb-img" alt="Vista frontal de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
+          <img src="/img/<?php echo htmlspecialchars($foto_frente); ?>" class="img-fluid rounded thumb-img" alt="Vista frontal de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
         </div>
         <div class="col-4">
-          <img src="../img/<?php echo htmlspecialchars($foto_costado); ?>" class="img-fluid rounded thumb-img" alt="Vista lateral de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
+          <img src="/img/<?php echo htmlspecialchars($foto_costado); ?>" class="img-fluid rounded thumb-img" alt="Vista lateral de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
         </div>
         <div class="col-4">
-          <img src="../img/<?php echo htmlspecialchars($foto_zoom); ?>" class="img-fluid rounded thumb-img" alt="Detalle de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
+          <img src="/img/<?php echo htmlspecialchars($foto_zoom); ?>" class="img-fluid rounded thumb-img" alt="Detalle de <?php echo htmlspecialchars($nombre); ?>" onclick="cambiarImagen(this)">
         </div>
       </div>
     </div>
 
-    <!-- 🔹 CAMBIO: col-md-7 para mejor responsive -->
     <div class="col-12 col-md-7">
       <div class="product-info">
         <div class="product-status mb-2">
@@ -99,46 +97,39 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
         <h1 class="text-start product-title"><?php echo htmlspecialchars($nombre); ?></h1>
 
-        <!-- Precio -->
         <div class="price-container mb-4">
-  <h2 class="price">
-  Precio: $
-  <span id="precioActual">
-    <?php echo htmlspecialchars(number_format($primeraMedida['precio'], 0, ',', '.'), ENT_QUOTES, 'UTF-8'); ?>
-  </span>
-</h2>
+          <h2 class="price">
+            Precio: $
+            <span id="precioActual">
+              <?php echo htmlspecialchars(number_format($primeraMedida['precio'], 0, ',', '.'), ENT_QUOTES, 'UTF-8'); ?>
+            </span>
+          </h2>
+          <h3>
+            <span id="precioDescuento">
+              $<?php echo htmlspecialchars(number_format(floor($primeraMedida['precio'] * 0.75), 0, ',', '.'), ENT_QUOTES, 'UTF-8'); ?>
+            </span>
+            Beneficio exclusivo!! Ahorrá un 25% pagando en efectivo!
+          </h3>
+        </div>
 
-  <h3>
-  <span id="precioDescuento">
-    $<?php echo htmlspecialchars(number_format(floor($primeraMedida['precio'] * 0.75), 0, ',', '.'), ENT_QUOTES, 'UTF-8'); ?>
-  </span>
-  Beneficio exclusivo!! Ahorrá un 25% pagando en efectivo!
-</h3>
-
-</div>
-
-
-        <!-- Medidas -->
         <?php if (!empty($medidas)) : ?>
-  <div class="mb-3">
-    <label class="fw-bold mb-2 d-block">Seleccioná una medida:</label>
-    <div id="opcionesMedidas">
-      <?php foreach ($medidas as $m) : ?>
-        <button type="button"
-                class="btn btn-medida me-2 mb-2 prod <?php echo ($m === $primeraMedida) ? 'activo' : ''; ?>"
-                data-precio="<?php echo htmlspecialchars($m['precio'], ENT_QUOTES, 'UTF-8'); ?>"
-                data-medida="<?php echo htmlspecialchars($m['medida'], ENT_QUOTES, 'UTF-8'); ?>">
-          <?php echo htmlspecialchars($m['medida'], ENT_QUOTES, 'UTF-8'); ?>
-        </button>
-      <?php endforeach; ?>
-    </div>
-  </div>
-<?php endif; ?>
+          <div class="mb-3">
+            <label class="fw-bold mb-2 d-block">Seleccioná una medida:</label>
+            <div id="opcionesMedidas">
+              <?php foreach ($medidas as $m) : ?>
+                <button type="button"
+                        class="btn btn-medida me-2 mb-2 prod <?php echo ($m === $primeraMedida) ? 'activo' : ''; ?>"
+                        data-precio="<?php echo htmlspecialchars($m['precio'], ENT_QUOTES, 'UTF-8'); ?>"
+                        data-medida="<?php echo htmlspecialchars($m['medida'], ENT_QUOTES, 'UTF-8'); ?>">
+                  <?php echo htmlspecialchars($m['medida'], ENT_QUOTES, 'UTF-8'); ?>
+                </button>
+              <?php endforeach; ?>
+            </div>
+          </div>
+        <?php endif; ?>
 
-
-        <!-- Formulario carrito -->
         <div class="producto-compra mb-4">
-          <form id="formCarrito" method="POST" action="agregar_carrito.php" class="mt-3">
+          <form id="formCarrito" method="POST" action="/pages/agregar_carrito.php" class="mt-3">
             <input type="hidden" name="id" value="<?php echo $id_producto; ?>">
             <input type="hidden" id="cantidadCarrito" name="cantidad" value="1">
             <input type="hidden" id="medidaCarrito" name="medida" value="<?php echo htmlspecialchars($primeraMedida['medida'], ENT_QUOTES, 'UTF-8'); ?>">
@@ -157,7 +148,6 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
           </form>
         </div>
 
-        <!-- Descripción -->
         <div class="card mt-4">
           <div class="card-header">
             <h3>Lo que necesitas saber de este producto</h3>
@@ -166,35 +156,26 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
             <ul class="list-unstyled">
               <li class="mb-2"><p><strong>Descripción:</strong></p> <?php echo nl2br(htmlspecialchars($descripcion)); ?></li>
 
+              También realizamos modelos a medida; consultanos por WhatsApp para recibir asesoramiento personalizado. <br>
 
-        También realizamos modelos a medida; consultanos por WhatsApp para recibir asesoramiento personalizado. <br>
+              <strong>Nuestros productos se destacan por su calidad y terminaciones.</strong>
 
-
-
-<strong>Nuestros productos se destacan por su calidad y terminaciones.</strong>
-
-<div class="alert alert-info mt-4 mb-4" role="alert">
-        <div class="d-flex align-items-center">
-          
-          <div>
-            <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
-            <p class="mb-0">Protegemos tu privacidad y tu datos en cada paso, para que tu experiencia de compra sea segura y confiable.</p>
-          </div>
-        </div>
-      </div>
+              <div class="alert alert-info mt-4 mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                  <div>
+                    <h5 class="mb-1"><strong>Compra 100% Segura</strong></h5>
+                    <p class="mb-0">Protegemos tu privacidad y tu datos en cada paso, para que tu experiencia de compra sea segura y confiable.</p>
+                  </div>
+                </div>
+              </div>
 
               <p><strong>Retiros:</strong> Podés retirar tus productos por nuestra fábrica en CABA. <br>
-                
-              <strong>Envíos a todo el país:</strong>
-
-    Realizamos envíos a domicilio en todo el territorio nacional.
-    El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra. <br>
-    <strong>El valor del flete es a cargo del cliente, no aplica al descuento en efectivo.</strong> <br><br>
-    Te damos como beneficio el embalaje <strong>bonificado</strong> para que tu producto viaje mas seguro. <br>
-
-  <strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
-
-  Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
+              <strong>Envíos a todo el país:</strong> Realizamos envíos a domicilio en todo el territorio nacional.
+              El costo del envío depende de la ubicación y se coordina directamente con nuestro equipo al momento de la compra. <br>
+              <strong>El valor del flete es a cargo del cliente, no aplica al descuento en efectivo.</strong> <br><br>
+              Te damos como beneficio el embalaje <strong>bonificado</strong> para que tu producto viaje mas seguro. <br>
+              <strong>Importante:</strong> Ruaj no se responsabiliza por posibles daños que puedan ocurrir durante el traslado.
+              Para consultas o pedidos, escribinos por WhatsApp al +54 11 3813-1307.</p>
             </ul>
           </div>
         </div>
@@ -202,7 +183,6 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
     </div>
   </div>
 
-  <!-- Productos relacionados -->
 <div class="row mt-5">
     <div class="col-12">
         <h2 class="mb-4">Productos relacionados</h2>
@@ -211,7 +191,8 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
     <?php
-    $stmt_rel = $conf->prepare("SELECT * FROM Producto WHERE id_categoria = ? AND id_producto != ? AND activo = 1 LIMIT 4");
+    /*** 🔥 TABLA CAMBIADA A MINÚSCULAS ***/
+    $stmt_rel = $conf->prepare("SELECT * FROM producto WHERE id_categoria = ? AND id_producto != ? AND activo = 1 LIMIT 4");
     $stmt_rel->bind_param("ii", $id_categoria, $id_producto);
     $stmt_rel->execute();
     $rel_result = $stmt_rel->get_result();
@@ -228,7 +209,6 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
             $rel_foto_costado = htmlspecialchars($rel['foto_costado'], ENT_QUOTES, 'UTF-8');
             $rel_id = (int)$rel['id_producto'];
 
-            // Obtener precio de la primera medida si existe
             $stmt_med = $conf->prepare("SELECT precio FROM producto_medidas WHERE id_producto = ? LIMIT 1");
             $stmt_med->bind_param("i", $rel_id);
             $stmt_med->execute();
@@ -241,13 +221,13 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
             }
             $stmt_med->close();
 
-            $rel_precio_desc = $rel_precio * 0.75; // 25% descuento
+            $rel_precio_desc = $rel_precio * 0.75;
     ?>
             <div class="col">
                 <div class="card h-100">
-                    <a href="detalle.php?id=<?php echo $rel_id; ?>" class="img-hover-wrap" style="text-decoration: none; color: inherit;">
-                        <img src="../img/<?php echo $rel_foto_frente; ?>" class="img-front" alt="Vista frontal de <?php echo $rel_nombre; ?>" loading="lazy">
-                        <img src="../img/<?php echo $rel_foto_costado; ?>" class="img-hover" alt="Vista lateral de <?php echo $rel_nombre; ?>" loading="lazy">
+                    <a href="/pages/detalle.php?id=<?php echo $rel_id; ?>" class="img-hover-wrap" style="text-decoration: none; color: inherit;">
+                        <img src="/img/<?php echo $rel_foto_frente; ?>" class="img-front" alt="Vista frontal de <?php echo $rel_nombre; ?>" loading="lazy">
+                        <img src="/img/<?php echo $rel_foto_costado; ?>" class="img-hover" alt="Vista lateral de <?php echo $rel_nombre; ?>" loading="lazy">
                     </a>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title"><?php echo $rel_nombre; ?></h5>
@@ -258,7 +238,7 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
                             <p class="card-text mb-2" style="font-size: 0.85rem; color: #666;">
                                 <strong style="color: var(--color-nav-text); font-size: 1rem;">$<?php echo number_format(round($rel_precio_desc), 0, ',', '.'); ?></strong> pagando en efectivo
                             </p>
-                            <a class="btn btn-medida me-2 mb-2 prod" href="detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
+                            <a class="btn btn-medida me-2 mb-2 prod" href="/pages/detalle.php?id=<?php echo $rel_id; ?>">Comprar</a>
                         </div>
                     </div>
                 </div>
@@ -273,7 +253,6 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 
 </div>
 
-<!-- Modal de Zoom -->
 <div class="zoom-modal" id="zoomModal">
   <button class="close-btn" onclick="cerrarZoom()">×</button>
   <div class="zoom-content">
@@ -288,7 +267,6 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
 </div>
 
 <script>
-  // Funciones de zoom
   let zoomLevel = 1, isDragging = false, startX, startY, translateX = 0, translateY = 0;
 
   function cambiarImagen(elemento){document.getElementById('main-product-image').src = elemento.src;}
@@ -305,33 +283,29 @@ $primeraMedida = !empty($medidas) ? $medidas[0] : ['medida'=>'', 'precio'=>$prec
   document.getElementById('zoomModal').addEventListener('click', (e)=>{if(e.target.id==='zoomModal') cerrarZoom();});
   document.getElementById('zoomImage').addEventListener('wheel',(e)=>{e.preventDefault();e.deltaY<0?zoomIn():zoomOut();});
 
-  // Cantidad y carrito
   const selectCantidad = document.getElementById('quantity');
   const inputCantidadCarrito = document.getElementById('cantidadCarrito');
   const formCarrito = document.getElementById('formCarrito');
   selectCantidad.addEventListener('change', ()=>{inputCantidadCarrito.value = selectCantidad.value;});
   formCarrito.addEventListener('submit', ()=>{inputCantidadCarrito.value = selectCantidad.value;});
 
-// Botones de medida
-const precioCarrito = document.getElementById('precioCarrito');
-const medidaCarrito = document.getElementById('medidaCarrito');
-document.querySelectorAll('.btn-medida').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.btn-medida').forEach(b=>b.classList.remove('activo'));
-    btn.classList.add('activo');
-    precioCarrito.value = btn.dataset.precio;
-    medidaCarrito.value = btn.dataset.medida;
-    document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR');
-
-    const precioDescuento = document.querySelector('#precioDescuento');
-    if (precioDescuento) {
-      const nuevoPrecio = parseFloat(btn.dataset.precio);
-      const precioConDescuento = Math.floor(nuevoPrecio * 0.75);
-      precioDescuento.textContent = `$${precioConDescuento.toLocaleString('es-AR')}`;
-    }
+  const precioCarrito = document.getElementById('precioCarrito');
+  const medidaCarrito = document.getElementById('medidaCarrito');
+  document.querySelectorAll('.btn-medida').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.btn-medida').forEach(b=>b.classList.remove('activo'));
+      btn.classList.add('activo');
+      precioCarrito.value = btn.dataset.precio;
+      medidaCarrito.value = btn.dataset.medida;
+      document.getElementById('precioActual').textContent = Number(btn.dataset.precio).toLocaleString('es-AR');
+      const precioDescuento = document.querySelector('#precioDescuento');
+      if (precioDescuento) {
+        const nuevoPrecio = parseFloat(btn.dataset.precio);
+        const precioConDescuento = Math.floor(nuevoPrecio * 0.75);
+        precioDescuento.textContent = `$${precioConDescuento.toLocaleString('es-AR')}`;
+      }
+    });
   });
-});
-
 </script>
 
-<?php include_once("../components/footer.php"); ?>
+<?php include_once(__DIR__ . "/../components/footer.php"); ?>
